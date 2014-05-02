@@ -42,7 +42,7 @@
 \fancyhead[R]{\textit{\nouppercase{\leftmark}}}
 \fancyhead[C]{}
 \fancyfoot[R]{--\thepage--}
-\fancyfoot[L]{Base revision~\GITAbrHash, \GITAuthorDate, \GITAuthorName.}
+\fancyfoot[L]{\tiny{rev~\GITAbrHash, \GITAuthorDate, \GITAuthorName.}}
 
 \setlength{\headheight}{14pt}
 
@@ -60,12 +60,13 @@
 \hypersetup{colorlinks, citecolor=black, filecolor=black, linkcolor=black, urlcolor=black}
 
 \newcommand{\weblink}[2]{\href{#1}{\url{#1}: \textsc{#2}}}
+\newcommand{\footnoteurl}[1]{\footnote{\url{#1}}}
 \newcommand{\us}{\,\si{\micro\second}\xspace}
 \newcommand{\km}{\,\si{\kilo\meter}\xspace}
 \newcommand{\ms}{\,ms}
-\newcommand{\DABplus}{DAB$^\mathrm{+}$\xspace}
+\newcommand{\dabplus}{DAB$^\mathrm{+}$\xspace}
 \newcommand{\captionwidth}{0.9\textwidth}
-\newcommand{\mmbtools}{\mbox{ODR-mmbTools}}
+\newcommand{\mmbtools}{\mbox{ODR-mmbTools}\xspace}
 
 % index stuff
 \usepackage{tocbibind} % Index in TOC
@@ -77,8 +78,8 @@
 
 % ---------------------------------------------------------
 
-\newcommand{\titleinfo}{Documentation for the ODR-mmbTools
-Open-Source Software-Defined \DABplus Tools}
+\newcommand{\titleinfo}{ODR-mmbTools \\
+Open-Source Software-Defined \dabplus Tools}
 \author{Matthias P. Brändli}
 \date{2 May 2014}
 \title{\titleinfo}
@@ -141,18 +142,21 @@ clock_config_t},
 
     \begin{center}
         \Large
-        \textsc{Opendigitalradio\\\href{http://opendigitalradio.org}{http://opendigitalradio.org}\\2014}
+        \textsc{Matthias P. Braendli, for Opendigitalradio\\\href{http://opendigitalradio.org}{http://opendigitalradio.org}\\2014}
     \end{center}
     \vspace{\fill}
     \vspace*{\stretch{2}}
 
     \begin{figure}[!h]
         \centering
-        \parbox{1.2in}{\includegraphics[width=10em]{figures/dab-pour-chats.jpg}}
+        \parbox{2.2in}{\includegraphics[width=16em]{figures/dab-pour-chats.jpg}}
         \qquad
     \end{figure}
 
     \vspace*{1cm}
+    This work is licensed under a
+    \url{http://creativecommons.org/licenses/by-sa/4.0/}
+    Creative Commons Attribution-ShareAlike 4.0 International License.
  \end{titlepage}
 
 \pagestyle{fancy}
@@ -187,6 +191,8 @@ clock_config_t},
 
 \pagenumbering{arabic}
 \include{introduction}
+\include{interfaces}
+\include{scenarios}
 \appendix
 \include{appendix}
 

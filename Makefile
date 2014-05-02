@@ -1,8 +1,12 @@
 latexfile = mmbtools
+includes = introduction.tex \
+		   interfaces.tex \
+		   scenarios.tex \
+		   appendix.tex
 
 all: $(latexfile).pdf
 
-$(latexfile).pdf : $(latexfile).tex vc.tex
+$(latexfile).pdf : $(latexfile).tex vc.tex $(includes)
 	while (pdflatex $(latexfile) ; \
 	grep -q "Rerun to get cross" $(latexfile).log ) do true ; \
 	done

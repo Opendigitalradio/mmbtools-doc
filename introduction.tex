@@ -1,7 +1,12 @@
+\section{Introduction}
+This is the official documentation for the \mmbtools. These tools can be used to
+experiment, learn and setup a DAB and \dabplus transmitter.
+
 \section{Purpose}
 The different programs that are part of the \mmbtools each have their own
 documentation regarding command-line options and configuration settings, and the
-opendigitalradio.org wiki contains many explanations and pointers, but there is
+opendigitalradio.org wiki\footnoteurl{http://opendigitalradio.org}
+contains many explanations and pointers, but there is
 no single source of documentation available for the whole tool-set.
 
 This document aims to solve this, by first outlining general concepts,
@@ -9,6 +14,64 @@ presenting different usage scenarios and detailing a complete transmission
 setup.
 
 With this document in hand, you should be able to understand all elements
-composing a \mmbtools transmission chain.
+composing a \mmbtools transmission chain, and how to set one up.
+
+\section{Presentation of the Tools}
+\subsection{Origins}
+In 2002, Communications Research Centre Canada\footnoteurl{http://crc.ca}
+started developing a DAB multiplexer. This effort evolved through the years, and
+was published later\sidenote{when?} as \mbox{CRC-DabMux} under the GPL
+open-source licence.
+
+CRC also developed a DAB modulator, called \mbox{CRC-DABMOD}, which could create
+baseband I/Q samples from an ETI file. This I/Q data could then be set to
+a hardware device using another tool. For the Ettus USRPs, a ``wave player''
+script was necessary to interface to GNURadio. Only DAB Transmission Mode 2 was
+supported. \mbox{CRC-DABMOD} was also released under the GPL\sidenote{when?}.
+
+As encoders, toolame could be used for DAB, and CRC developed a closed-source
+\mbox{CRC-DABPLUS} \dabplus encoder.
+
+These three CRC-~tools, and some additional services available on the now
+unreachable website\footnote{There are some snapshots of the website available
+    on \url{http://archive.org}.} \url{http://mmbtools.crc.ca} were
+part of the \mbox{CRC-mmbTools}. These tools made it possible to set up the
+first DAB transmission experiments.
+
+In 2012, these tools received experimental support for single-frequency
+networks, a functionality that has been developed by Matthias P. Braendli during
+his Master's thesis\footnote{The corresponding report is available at
+    \url{http://mpb.li/report.pdf}}.
+Because SFNs only make sense in TM 1, CRC subsequently released a patch to
+\mbox{CRC-DABMOD} that enabled all four transmission modes.
+
+At that point, involvement from CRC started to decline. The SFN patch was
+finally never included in the \mbox{CRC-mmbTools}, and as time passed by, the
+de-facto fork on \url{http://mpb.li} was receiving more and more features.
+Having two different programs with the same name made things complicated, and
+the tools were officially forked with the approval of CRC in Feb 2014, and given
+the new name \mbox{ODR-mmbTools}. They are now developed by the Opendigitalradio
+association.
+
+In April 2014, the official \mbox{CRC-mmbTools} website went offline, and it has
+become very difficult, if not impossible to acquire licences for the
+\mbox{CRC-DABPLUS} encoder. Luckily there is an open-source replacement
+available, which was part of Google's Android sources. This encoder has been
+extended with the necessary \dabplus{}-specific requirements (960-transform,
+error correction, framing, etc.), and now exists under the name
+\mbox{fdk-aac-dabplus}.
+
+\subsection{Included Tools}
+The \mmbtools contain the tools \mbox{ODR-DabMux}, \mbox{ODR-DabMod},
+\mbox{toolame-dab}, \mbox{fdk-aac-dabplus}, and other scripts, bits and pieces
+that are useful for the setup of a transmission chain.
+
+\subsubsection{ODR-DabMux}
+\subsubsection{ODR-DabMod}
+\subsubsection{toolame-dab}
+\subsubsection{fdk-aac-dabplus}
+\subsubsection{mmbtools-aux}
+
+
 
 % vim: spl=en spell tw=80 et
