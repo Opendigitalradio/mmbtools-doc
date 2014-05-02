@@ -1,0 +1,37 @@
+
+\section{CRC-DABMUX ETI file formats}
+\label{etiformat}
+CRC-DABMUX supports three output formats for the ETI stream, that have been described on the mmbTools forum
+website.\footnote{\url{http://mmbtools.crc.ca/component/option,com\_fireboard/Itemid,55/func,view/id,4/catid,13/\#28}}
+
+The three formats are called \emph{framed}, \emph{streamed} and \emph{raw}.
+
+The \emph{framed} format is used for saving a finite ETI stream into a file. Each frame does not contain any padding, and the
+format can be described as follows:
+\begin{lstlisting} 
+uint32_t nbFrames
+// for each frame
+  uint16_t frameSize
+  uint8_t data[frameSize]
+\end{lstlisting}
+
+When streaming data, in which case the number of frames is not known in advance, the \emph{streamed} format can be used.
+This format is identical to the first one except for the missing \texttt{nbFrames}.
+\begin{lstlisting} 
+// for each frame
+  uint16_t frameSize
+  uint8_t data[frameSize]
+\end{lstlisting}
+
+The \emph{raw} format corresponds to ETI(NI), where each frame has a constant size of 6144 Bytes. The padding in this
+case is necessary.
+\begin{lstlisting} 
+// for each frame
+  uint8_t data[6144]
+\end{lstlisting}
+
+In order to select the format, the following syntax for the \texttt{-O} option is used:
+\texttt{-O file://filename?type=format}, where \texttt{format} is one of \verb+framed+, \verb+streamed+ or
+\verb+raw+.
+
+

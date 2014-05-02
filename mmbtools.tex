@@ -1,0 +1,195 @@
+\RequirePackage[l2tabu, orthodox]{nag}
+\documentclass[a4paper,oneside,10pt]{article}
+
+%include version control info
+\input{vc.tex}
+
+%\usepackage[bindingoffset=1.5cm,centering,includeheadfoot,margin=3cm]{geometry}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[pdftex]{graphicx}
+%\usepackage{subfig}
+
+\usepackage[protrusion=true,expansion=true]{microtype}
+
+\usepackage{fancybox}
+\usepackage{shadow}
+\usepackage{xspace}
+\usepackage{acronym}
+
+%\usepackage{lmodern} % new latin extended computer modern font}, use with T1
+%\usepackage{pxfonts} % has replaced palatino
+\usepackage{cmbright}
+
+\usepackage{listings}
+
+\usepackage[allowlitunits]{siunitx}
+% Try $20\micro\seconds$
+
+%\addtolength{\oddsidemargin}{-1cm}
+%\addtolength{\evensidemargin}{-1cm}
+%\addtolength{\textwidth}{+2cm}
+%\usepackage{showframe}
+ 
+%\usepackage{lastpage}
+% for \pageref{LastPage}
+
+% fancy header
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} % clear default header and footer
+\fancyhead[R]{\textit{\nouppercase{\leftmark}}}
+\fancyhead[C]{}
+\fancyfoot[R]{--\thepage--}
+\fancyfoot[L]{Base revision~\GITAbrHash, \GITAuthorDate, \GITAuthorName.}
+
+\setlength{\headheight}{14pt}
+
+\newcommand\Hrule{\noindent\rule{\linewidth}{1.5pt}}
+\newcommand{\sidenote}[1]{\marginpar{\scriptsize{\textsf{#1}}}} % Bram's sidenote for comments
+
+%\usepackage{titlesec}
+
+\usepackage[pdftex,
+ pdfauthor={Matthias P. Braendli},
+ pdftitle={ODR-mmbTools Documentation},
+ pdfsubject={},
+ pdfkeywords={Digital Audio Broadcasting,DAB,single-frequency network,SFN,mmbTools,ODR-mmbTools,open-source,software-defined radio},
+ pdfcreator=pdflatex]{hyperref}
+\hypersetup{colorlinks, citecolor=black, filecolor=black, linkcolor=black, urlcolor=black}
+
+\newcommand{\weblink}[2]{\href{#1}{\url{#1}: \textsc{#2}}}
+\newcommand{\us}{\,\si{\micro\second}\xspace}
+\newcommand{\km}{\,\si{\kilo\meter}\xspace}
+\newcommand{\ms}{\,ms}
+\newcommand{\DABplus}{DAB$^\mathrm{+}$\xspace}
+\newcommand{\captionwidth}{0.9\textwidth}
+\newcommand{\mmbtools}{\mbox{ODR-mmbTools}}
+
+% index stuff
+\usepackage{tocbibind} % Index in TOC
+%\usepackage{makeidx}
+%\usepackage{showidx} % show index entries in margin
+%\makeindex
+
+%\newcommand{\bib}[4]{\item{\textsc{#1}, \emph{#2}, #3\\\hspace{2em}#4}}
+
+% ---------------------------------------------------------
+
+\newcommand{\titleinfo}{Documentation for the ODR-mmbTools
+Open-Source Software-Defined \DABplus Tools}
+\author{Matthias P. Brändli}
+\date{2 May 2014}
+\title{\titleinfo}
+
+
+% Margins for handwritten notes
+%\addtolength{\oddsidemargin}{-2cm}
+%\addtolength{\evensidemargin}{-2cm}
+%\addtolength{\textwidth}{-2cm}
+
+\usepackage{color}
+\definecolor{Brown}{cmyk}{0,0.81,1,0.60}
+\definecolor{OliveGreen}{cmyk}{0.64,0,0.95,0.40}
+\definecolor{CadetBlue}{cmyk}{0.62,0.57,0.23,0}
+\definecolor{lightlightgray}{cmyk}{0,0,0,0.02}
+\definecolor{gray}{cmyk}{0,0,0,0.8}
+
+% LaTeX magic: make sections have a cleardoublepage
+% Useful for twoside only
+%\let\stdsection\section
+%\renewcommand*\section{\cleardoublepage\stdsection}
+
+\begin{document}
+\lstset{
+language=C,                             % Code langugage
+basicstyle=\ttfamily,                   % Code font, Examples: \footnotesize, \ttfamily
+keywordstyle=\color{OliveGreen},        % Keywords font ('*' = uppercase)
+commentstyle=\color{gray},              % Comments font
+numbers=left,                           % Line nums position
+numberstyle=\tiny,                      % Line-numbers fonts
+stepnumber=1,                           % Step between two line-numbers
+numbersep=5pt,                          % How far are line-numbers from code
+backgroundcolor=\color{lightlightgray}, % Choose background color
+frame=none,                             % A frame around the code
+tabsize=2,                              % Default tab size
+captionpos=b,                           % Caption-position = bottom
+breaklines=true,                        % Automatic line breaking?
+breakatwhitespace=false,                % Automatic breaks only at whitespace?
+showspaces=false,                       % Dont make spaces visible
+showtabs=false,                         % Dont make tabls visible
+morekeywords={uint32_t,uint8_t,uint16_t,time_spec_t,size_t,
+clock_config_t},
+}
+\pagestyle{empty}
+\pagenumbering{roman}
+ \begin{titlepage}
+    \null\vfil
+    \begin{flushleft}
+      \huge \textbf{\titleinfo}
+    \end{flushleft}
+    \par
+    \hrule height 4pt
+    \par
+    \begin{flushright}
+      \large
+      \textsl{Project Documentation} \par
+    \end{flushright}
+    \vspace{\fill}
+    \vspace*{\stretch{1}}
+
+    \begin{center}
+        \Large
+        \textsc{Opendigitalradio\\\href{http://opendigitalradio.org}{http://opendigitalradio.org}\\2014}
+    \end{center}
+    \vspace{\fill}
+    \vspace*{\stretch{2}}
+
+    \begin{figure}[!h]
+        \centering
+        \parbox{1.2in}{\includegraphics[width=10em]{figures/dab-pour-chats.jpg}}
+        \qquad
+    \end{figure}
+
+    \vspace*{1cm}
+ \end{titlepage}
+
+\pagestyle{fancy}
+\tableofcontents
+
+\section*{Acronyms}
+\markboth{Acronyms}{}
+\addcontentsline{toc}{section}{Acronyms}
+\begin{acronym}[mmbTools]
+    \acro{1PPS}{One pulse per second}
+    \acro{CIF}{Common Interleaved Frame}
+    \acro{CRC}{Communications Research Centre Canada}
+    \acro{DAB}{Digital Audio Broadcasting}
+    \acro{DMB}{Digital Multimedia Broadcasting}
+    \acro{ETI}{Ensemble Transport Interface}
+    \acro{ETSI}{European Telecommunications Standards Institute}
+    \acro{FIC}{Fast Information Channel}
+    \acro{HE-AAC}{High Efficiency Advanced Audio Codec}
+    \acro{mmbTools}{Mobile Multimedia Broadcasting Tools}
+    \acro{MNSC}{Multiplex Network Signalling Channel}
+    \acro{NTP}{Network Time Protocol}
+    \acro{OCXO}{Oven-Controlled Crystal Oscillator}
+    \acro{OFDM}{Orthogonal Frequency-Division Multiplexing}
+    \acro{PRBS}{Pseudo-Random Bit Sequence}
+    \acro{SFN}{Single-Frequency Network}
+    \acro{TCXO}{Temperature-Compensated Crystal Oscillator}
+    \acro{TIST}{Timestamp field in the ETI frame}
+    \acro{TM}{Transmission Mode}
+    \acro{UHD}{USRP Hardware Driver}
+    \acro{USRP}{Universal Software-Radio Peripheral}
+\end{acronym}
+
+\pagenumbering{arabic}
+\include{introduction}
+\appendix
+\include{appendix}
+
+\end{document}
+
+% vim: spl=en spell tw=80 et

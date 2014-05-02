@@ -1,0 +1,7 @@
+
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+vc.tex
