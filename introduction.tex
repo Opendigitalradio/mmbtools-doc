@@ -3,6 +3,18 @@ This is the official documentation for the \mmbtools. These tools can be used to
 experiment with DAB modulation, learn the techniques behind it and setup a DAB
 or \dabplus transmitter.
 
+This documentation assumes that you are already familiar with base concepts of
+the DAB system. To get started with the \mmbtools, understanding how the DAB
+transmission chain is structured is a prerequisite. The ``DAB Bible'' by Hoeg
+and Lauterbach~\cite{hoeg} and the ``Guide to DAB standards'' from the
+ETSI~\cite{etsidabguide} can be used as a starting point.
+
+In this document, the terms ``DAB'' and ``\dabplus'' are used somewhat
+interchangeably, since many parts of the transmission chain are identical
+between the two variants. In most cases, ``DAB'' will be used, and ``\dabplus''
+when talking about specific details about the newer version of the standard.
+
+
 \section{Purpose}
 The different programs that are part of the \mmbtools each have their own
 documentation regarding command-line options and configuration settings, and the
@@ -68,13 +80,48 @@ The \mmbtools contain the tools \mbox{ODR-DabMux}, \mbox{ODR-DabMod},
 that are useful for the setup of a transmission chain.
 
 \subsubsection{ODR-DabMux}
-ODR-DabMux implements a multiplexer that is conforming to the DAB
-standard~\cite{etsidab}.
+ODR-DabMux implements a DAB multiplexer that combines all audio and data inputs
+into an ETI output. It can be used off-line (i.e.~not real-time) to generate ETI
+data for later processing, or in a real-time streaming scenario (e.g.~in a
+transmitter).
+
+It can read input audio or data from files (``.mp2'' for DAB, ``.dabp'' for
+\dabplus), FIFOs (also called ``named pipes'') or a network connection. The
+network connection can use UDP or ZeroMQ. The CURVE authentication mechanism
+from ZeroMQ can also be used to authenticate the encoder, in order to avoid that
+a third-party can disrupt or hijack a programme.
+
+The ensemble configuration can be specified on the command line using the
+options described in the manpage, or using a configuration file. The command
+line options are kept to be compatible with CRC-DABMUX, but using the
+configuration file is preferred, because it supports more options.
+
 
 \subsubsection{ODR-DabMod}
+ODR-DabMod is a software-defined DAB modulator that receives or reads ETI, and
+generates modulated I/Q data usable for transmission.
+
+This I/Q data which is encoded as complex floats (32bits per complex sample) can
+be written to a file or pipe, or sent to a USRP device using the integrated UHD
+output. Other SDR platforms can be used if they are able to accept the I/Q data.
+The output of the modulator can also be used in GNURadio if format conversion or
+graphical analysis (spectrum) is to be done.
+
 \subsubsection{toolame-dab}
+TooLAME is a MPEG-1 Layer II audio encoder that is used to encode audio for the
+DAB standard. The original project has been unmaintained since 2003, but the
+twolame fork that pursues the development removed the DAB framing.
+
+The toolame-dab fork includes the ZeroMQ output and PAD insertion support, but
+the audio coder is the same as the one in tooLAME.
+
 \subsubsection{fdk-aac-dabplus}
-\subsubsection{mmbtools-aux}
+The fdk-aac-dabplus encoder can be used to encode for \dabplus. The encoder
+itself comes from the Android sources, and was written by Fraunhofer.
+
+The necessary framing and error-correction that \dabplus mandates, the PAD
+insertion, the ZeroMQ output and the ALSA input were then added by different
+parties.
 
 
 
