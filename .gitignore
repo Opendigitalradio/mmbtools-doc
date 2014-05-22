@@ -5,6 +5,8 @@
 *.snm
 *.toc
 *.aux
+*.bbl
+*.blg
 vc.tex
 
 mmbtools.pdf
