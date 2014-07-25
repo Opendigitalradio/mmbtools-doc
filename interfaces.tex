@@ -1,4 +1,106 @@
 \section{Interfacing the Tools}
 \subsection{Files and Pipes}
+The first versions of these tools used files and pipes to exchange data. For
+offline generation of a multiplex or a modulated I/Q, it is possible to
+generate all files separately, one after the other.
+
+Here is an example to generate a two-minute ETI file for a multiplex containing two programmes:
+\begin{itemize}
+    \item one DAB programme at 128kbps, encoded with toolame-dab
+    \item one \dabplus{} programme at 88kbps, encoded with fdk-aac-dabplus
+\end{itemize}
+
+We assume that the audio data for the two programmes is located in uncompressed
+48kHz WAV in the files \filename{prog1.wav} and \filename{prog2.wav}. The first step
+is to encode the audio. The DAB programme is encoded to \filename{prog1.mp2} using:
+\begin{lstlisting}
+toolame -b 128 prog1.wav prog1.mp2
+\end{lstlisting}
+
+The DAB+ programme is encoded to \filename{prog2.dabp}. The extension
+\filename{.dabp} is arbitrary, but since the framing is not the same as for
+other AAC encoded audio, it makes sense to use a special extension. The command
+is:
+\begin{lstlisting}
+dabplus-enc -i prog2.wav -b 88 -a o prog2.dabp
+\end{lstlisting}
+
+These resulting files can then be used with ODR-DabMux to create an ETI file.
+ODR-DabMux supports many options, which makes it much more practical to set
+the configuration using a file than using very long command lines. Here is a short
+file that can be used for the example, which will be saved as \filename{2programmes.mux}:
+\begin{lstlisting}
+general {
+    dabmode 1
+    nbframes 5000
+}
+remotecontrol { telnetport 0 }
+ensemble {
+    id 0x4fff
+    ecc 0xec ; Extended Country Code
+
+    local-time-offset auto
+    international-table 1
+    label "mmbtools"
+    shortlabel "mmbtools"
+}
+services {
+    srv-p1 { label "Prog1" }
+    srv-p2 { label "Prog2" }
+}
+subchannels {
+    sub-p1 {
+        type audio ; MPEG
+        inputfile "prog1.mp2"
+        bitrate 128
+        id 10
+        protection 5
+    }
+    sub-p2 {
+        type dabplus
+        inputfile "prog2.dabp"
+        bitrate 88
+        id 1
+        protection 1
+    }
+}
+components {
+    comp-p1 {
+        label Prog1
+        service srv-p1
+        subchannel sub-p1
+    }
+    comp-p2 {
+        label Prog2
+        service srv-p2
+        subchannel sub-p2
+    }
+}
+outputs { output1 "file://myfirst.eti?type=raw" }
+\end{lstlisting}
+
+This file defines two components, that each link one service and one
+subchannel. The IDs and different protection settings are also defined.
+
+The bitrates defined in the subchannels must correspond to the bitrate set at the encoder.
+
+The duration of the ETI file is limited by the \lstinline{nbframes 5000} setting. Each frame
+corresponds to $24$\ms, and therefore $120 / 0.024 = 5000$ frames are needed
+for $120$ seconds.
+
+The output is written to the file \filename{myfirst.eti} in the ETI(NI) format. Please
+see Appendix~\ref{etiformat} for more options.
+
+To run the multiplexer, run:
+\begin{lstlisting}
+odr-dabmux -e 2programmes.mux
+\end{lstlisting}
+
+This will generate the file \filename{myfirst.eti}, which will be $5000 * 6144
+\approx 30$\si{MB} in size.
+
+Congratulations! You have just created your first DAB multiplex! With the configuration file,
+adding more programmes is easy. More information is available in the \filename{doc/example.mux}
+
 \subsection{Over the Network}
 \subsubsection{Authentication Support}
