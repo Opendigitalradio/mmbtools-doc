@@ -1,10 +1,97 @@
 \section{Usage Scenarios}
 \subsection{Experimentation}
 \subsubsection{Creation of Non-Realtime Multiplex}
+The creation of a ETI file containing two programmes, one DAB and one \dabplus{} is covered in
+section \ref{sec-files}.
+
 \subsubsection{Modulation of ETI for Offline Processing}
+The ETI file generated before can then be used with ODR-DabMod to generate a file containing I/Q
+samples. Here, we must chose between using the command line or the configuration file. For a very
+simple example, using the command line makes sense, but for more advanced features it is preferable
+to use a configuration file. For illustration, we will present both.
+
+To modulate the file \texttt{myfirst.eti} into \texttt{myfirst.iq}, with the default options, the
+command is simply
+
+\begin{lstlisting}
+odr-dabmod myfirst.eti -f myfirst.iq
+\end{lstlisting}
+
+This will create a file containing 16-bit interleaved I/Q at $2048000$ samples per second. The
+transmission mode is defined by the ETI file.
+
+The equivalent configuration file would be
+\begin{lstlisting}
+[input]
+transport=file
+source=myfirst.eti
+
+[output]
+output=file
+
+[fileoutput]
+filename=myfirst.iq
+\end{lstlisting}
+
+This is a very minimal file that defines only the necessary settings equivalent to the above command
+line options. The configuration file however supports more options that the command line, and
+becomes easier to manager once the set becomes more complex. It is best to use the example
+configuration availble in the \texttt{doc/} folder.
 
 \subsection{Interfacing Hardware Devices}
 \subsubsection{Ettus USRP}
+ODR-DabMod integrates support for the UHD library that can interface with all USRP devices from
+Ettus. The following configuration file illustrates how to send the \texttt{myfirst.eti} over a USRP
+B200 on channel 13C:
+
+\begin{lstlisting}
+[remotecontrol]
+telnet=1
+telnetport=2121
+
+[input]
+transport=file
+source=myfirst.eti
+loop=1
+
+[modulator]
+gainmode=2
+digital_gain=0.8
+
+[firfilter]
+enabled=1
+filtertapsfile=simple_taps.txt
+
+[output]
+output=uhd
+
+[uhdoutput]
+master_clock_rate=32768000
+type=b200
+txgain=40
+channel=13C
+\end{lstlisting}
+
+This example also shows more options that the example for the file output:
+
+\begin{itemize}
+    \item \texttt{remotecontrol telnet=1} enables the Telnet server that can be used to set
+        parameters while the modulator is running.
+    \item \texttt{loop=1} rewinds the input file when the end is reached. The same ETI file will be
+        transmitted over and over.
+    \item \texttt{gainmode=2} sets the GainMode to VAR, which reduces overshoots in the output.
+    \item \texttt{digital\_gain=0.8} reduces the output sample deviation, to reduce compression in
+        the USRP.
+    \item \texttt{firfilter enabled=1} enables an additional FIR filter to improve the spectrum
+        mask.
+    \item \texttt{master\_clock\_rate=32768000} sets the USRP internal clock to a multiple of
+        $2048000$, which is required if we want to use the native DAB sample rate.
+    \item \texttt{txgain=40} Sets the analog transmit gain of the USRP to 40dB, which is specific to
+        the B200.
+\end{itemize}
+
+Some of these options are not necessary for the system to work, but they improve the performance.
+
 \subsubsection{Other Hardware}
 
 \subsection{Audio sources}

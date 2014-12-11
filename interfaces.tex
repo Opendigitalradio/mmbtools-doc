@@ -1,5 +1,6 @@
 \section{Interfacing the Tools}
 \subsection{Files}
+\label{sec-files}
 The first versions of these tools used files and pipes to exchange data. For
 offline generation of a multiplex or a modulated I/Q, it is possible to
 generate all files separately, one after the other.
@@ -111,6 +112,10 @@ This network connection is based on ZeroMQ, a library that permits the creation 
 connection with automatic connection management (connection, disconnection, error handling).
 ZeroMQ uses a TCP/IP connection, and can therefore be used over any kind of IP networks.
 
+This connection makes it possible to put the different tools on different computers, but it is not
+necessary. It is also possible, and even encouraged to use this interconnection locally on the same
+machine.
+
 \subsubsection{Between Encoder and Multiplexer}
 
 Between fdk-aac-dabplus and ODR-DabMux, the ZeroMQ connection transmits AAC superframes, with
@@ -120,8 +125,6 @@ makes more sense to calculate this in the encoder.
 
 The toolame-dab encoder also can send MPEG frames over ZeroMQ, but is not yet able to calculate and
 transmit audio level metadata yet.
-
-\sidenote{Add configuration example for encoders}
 
 On the multiplexer, the subchannel must be configured for ZeroMQ as follows:
 \begin{lstlisting}
@@ -186,7 +189,7 @@ available in fdk-aac-dabplus, which insures that the encoder outputs the AAC bit
 nominal rate, aligned to the NTP-synchronised system time, and not to the sound card clock. The
 sound card clock error is compensated for inside the encoder.
 
-
+Complete examples of such a setup are given in the Scenarios.
 
 \subsubsection{Authentication Support}
 In order to be able to use the Internet as contribution network, some form of protection has to be
@@ -207,4 +210,15 @@ to set up keys and to distribute them to the encoder and the multiplexer.
 
 \subsubsection{Between Multiplexer and Modulator}
 
+The ZeroMQ connection can also be used to connect ODR-DabMux to one or more instances of ODR-DabMod.
+One ZeroMQ frame contains four ETI frames, which guarantees that the modulator always assembles the
+transmission frame in a correct way, even in Transmission Mode I, where four ETI frames are used
+together.
+
 \subsection{Pipes}
+
+Pipes are an older real-time method to connect several encoders to one multiplexer on the same
+machine. It uses the same configuration as the file input but instead of using files, FIFOs, also
+called ``named pipes'' are created first using \texttt{mkfifo}.
+
+This setup is deprecated in favour of the ZeroMQ interface.
