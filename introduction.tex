@@ -31,6 +31,8 @@ composing a \mmbtools transmission chain, and how to set one up.
 
 \section{Presentation of the Tools}
 \subsection{Origins}
+Before we begin with technical details, first a word about the history of
+the mmbTools.
 In 2002, Communications Research Centre Canada\footnoteurl{http://crc.ca}
 started developing a DAB multiplexer. This effort evolved through the years, and
 was published in September 2009 as \mbox{CRC-DabMux} under the GPL
@@ -55,7 +57,7 @@ In 2012, these tools received experimental support for single-frequency
 networks, a functionality that has been developed by Matthias P. Brändli during
 his Master's thesis\footnote{The corresponding report is available at
     \url{http://mpb.li/report.pdf}}.
-Because SFNs only make sense in TM 1, CRC subsequently released a patch to
+Because SFNs are mainly used in TM 1, CRC subsequently released a patch to
 \mbox{CRC-DABMOD} that enabled all four transmission modes.
 
 At that point, involvement from CRC started to decline. The SFN patch was
@@ -72,11 +74,12 @@ become very difficult, if not impossible to acquire licences for the
 available, which was part of Google's Android sources. This encoder has been
 extended with the necessary \dabplus{}-specific requirements (960-transform,
 error correction, framing, etc.), and now exists under the name
-\mbox{fdk-aac-dabplus}.
+\mbox{FDK-AAC-DABplus}.
 
 \subsection{Included Tools}
-The \mmbtools contain the tools \mbox{ODR-DabMux}, \mbox{ODR-DabMod},
-\mbox{toolame-dab}, \mbox{fdk-aac-dabplus}, and other scripts, bits and pieces
+The \mmbtools are composed of several software projects:
+\mbox{ODR-DabMux}, \mbox{ODR-DabMod},
+\mbox{Toolame-DAB}, \mbox{FDK-AAC-DABplus}, and other scripts, bits and pieces
 that are useful for the setup of a transmission chain.
 
 \subsubsection{ODR-DabMux}
@@ -107,17 +110,17 @@ output. Other SDR platforms can be used if they are able to accept the I/Q data.
 The output of the modulator can also be used in GNURadio if format conversion or
 graphical analysis (spectrum) is to be done.
 
-\subsubsection{toolame-dab}
+\subsubsection{Toolame-DAB}
 TooLAME is a MPEG-1 Layer II audio encoder that is used to encode audio for the
 DAB standard. The original project has been unmaintained since 2003, but the
 twolame fork that pursues the development removed the DAB framing. Because of
 this, twolame is not suitable for DAB.
 
-The toolame-dab fork includes the ZeroMQ output and PAD insertion support, but
+The Toolame-DAB fork includes the ZeroMQ output and PAD insertion support, but
 the audio coder is the same as the one in tooLAME.
 
-\subsubsection{fdk-aac-dabplus}
-The fdk-aac-dabplus encoder can be used to encode for \dabplus. The encoder
+\subsubsection{FDK-AAC-DABplus}
+The FDK-AAC-DABplus encoder can be used to encode for \dabplus. The encoder
 itself comes from the Android sources, and was written by Fraunhofer.
 
 The necessary framing and error-correction that \dabplus mandates, the PAD

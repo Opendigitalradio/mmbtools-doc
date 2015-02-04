@@ -7,8 +7,8 @@ generate all files separately, one after the other.
 
 Here is an example to generate a two-minute ETI file for a multiplex containing two programmes:
 \begin{itemize}
-    \item one DAB programme at 128kbps, encoded with toolame-dab
-    \item one \dabplus{} programme at 88kbps, encoded with fdk-aac-dabplus
+    \item one DAB programme at 128kbps, encoded with Toolame-DAB
+    \item one \dabplus{} programme at 88kbps, encoded with FDK-AAC-DABplus
 \end{itemize}
 
 We assume that the audio data for the two programmes is located in uncompressed
@@ -118,12 +118,12 @@ machine.
 
 \subsubsection{Between Encoder and Multiplexer}
 
-Between fdk-aac-dabplus and ODR-DabMux, the ZeroMQ connection transmits AAC superframes, with
+Between FDK-AAC-DABplus and ODR-DabMux, the ZeroMQ connection transmits AAC superframes, with
 additional metadata that contains the audio level indication for monitoring purposes. The
 multiplexer cannot easily derive the audio level from the AAC bitstream without decoding it, so it
 makes more sense to calculate this in the encoder.
 
-The toolame-dab encoder also can send MPEG frames over ZeroMQ, but is not yet able to calculate and
+The Toolame-DAB encoder also can send MPEG frames over ZeroMQ, but is not yet able to calculate and
 transmit audio level metadata yet.
 
 On the multiplexer, the subchannel must be configured for ZeroMQ as follows:
@@ -185,7 +185,7 @@ acceptable, e.g. more than once per hour.
 
 Both situations are suboptimal, because they lead to audio glitches, and also degrade the ability to
 compensate for network latency changes. It is preferable to use the drift compensation feature
-available in fdk-aac-dabplus, which insures that the encoder outputs the AAC bitstream at the
+available in FDK-AAC-DABplus, which insures that the encoder outputs the AAC bitstream at the
 nominal rate, aligned to the NTP-synchronised system time, and not to the sound card clock. The
 sound card clock error is compensated for inside the encoder.
 
