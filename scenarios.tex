@@ -43,8 +43,9 @@ the \texttt{doc/} folder.
 \subsection{Interfacing Hardware Devices}
 \subsubsection{Ettus USRP}
 ODR-DabMod integrates support for the UHD library that can interface with all
-USRP devices from Ettus. The following configuration file illustrates how to
-send the \texttt{myfirst.eti} over a USRP B200 on channel 13C:
+USRP devices from Ettus. The following configuration file \texttt{mod.ini}
+illustrates how to send the \texttt{myfirst.eti} over a USRP B200 on channel
+13C:
 
 \begin{lstlisting}
 [remotecontrol]
@@ -97,10 +98,98 @@ This example also shows more options that the example for the file output:
 Some of these options are not necessary for the system to work, but they
 improve the performance.
 
-\subsubsection{Other Hardware}
+\paragraph{Remarks concerning the USRP B200}
+The USRP B200 is the device we are using most. It's performance is proven in a
+production environment, it supports the transmit synchronisation necessary for
+SFN and is robust enough for 24/7 operation.
 
-\subsection{Audio sources}
+However, care has to be taken about the host system, especially about the USB
+controller. Using USB~2.0 is not a problem for a DAB transmission, both USB~2.0
+and USB~3.0 host controllers can therefore be used. Since USB~2.0 has been
+around for longer and is more mature, it is sometimes preferable because it
+causes less USB errors. This heavily depends on the exact model of the USB
+controller inside the host PC, and has to be tested for each system.
+
+The txgain on the B200 varies between $0$dB and about $90$dB. Experience shows
+that compression effects begin to appear at values around $85$dB. This might be
+different from device to device and needs to measured.
+
+Similarly, the digital gain has to optimised for a given setting. It is
+important that there is no digital clipping in the chain, because that leads to
+problematic spurious spectrum components, that can disturb or even damage a
+power amplifier.
+
+There are some performance measurements available on the Opendigitalradio
+wiki.\footnote{\url{http://wiki.opendigitalradio.org/index.php/USRP\_B200\_Measurements}}
+
+\paragraph{Remarks concerning other USRP models}
+We have used the USRP1, the USRP2 and the USRP B100 with the tools. The WBX is
+the most appropriate daughterboard for these models.
+
+The txgain setting has another range, it is best to start at $0$dB, and increase
+it in steps of $3$dB or smaller while measuring the output signal, until the
+correct power is reached.
+
+\subsubsection{Other Hardware}
+The HackRF can also be used as a transmit platform. It's interfacing is not
+integrated with ODR-DabMod, and it only supports 8-bit samples. The
+configuration is a bit different. First, we must output signed 8-bit interleaved
+I/Q samples instead of 32-bit interleaved floats, and second, we cannot use UHD,
+but must go through a pipe to HackRF. The output settings inside the
+configuration are as shown:
+
+\begin{lstlisting}
+[output]
+output=file
+[fileoutput]
+format=s8
+filename=/tmp/ofdm.fifo
+\end{lstlisting}
+
+The output fifo has to be created beforehand, and the \texttt{hackrf\_transfer}
+utility is then used to transmit the signal to the device. The options needed
+for the transmission utility are not complete yet. The rough idea would be:
+
+\begin{lstlisting}
+mkfifo /tmp/ofdm.fifo
+odr-dabmod mod.ini &
+hackrf_transfer -f <frequency> -t /tmp/odr.fifo
+\end{lstlisting}
+
+
+\subsection{Audio Sources}
+Preparing a DAB multiplex with different programmes requires that we are able to
+read and encode several audio sources. This audio data can reach the multiplexer
+in different ways. We will go over different possibilities in this part.
+
 \subsubsection{Using Existing Web-Streams}
+One common scenario is to transmit radio stations that already are available as
+web-radio streams. For simplicity, it makes sense to get these web streams,
+which are most often encoded in mp3 and available through HTTP, decode them, and
+use them as audio source for the DAB or \dabplus encoder.
+
+The advantage of this approach is that the radio itself does not need to setup a
+new infrastructure if the stream is of good quality. The main disadvantage is
+that the audio is encoded twice, and this coding cascading degrades the audio
+quality.
+
+Often, web-streams are encoded in mp3 at $44100\Hz$ sample-rate, whereas DAB
+is most often $48000\Hz$ or sometimes $32000\Hz$. A sample-rate conversion is
+necessary in the stream decoder.
+
+There are many different stream decoders, and gstreamer, mpg123 and mplayer have
+been tested. We have achieved good results with mplayer, and the dab-scripts
+repository\footnote{\url{http://github.com/Opendigitalradio/dab-scripts}}
+contain the script \texttt{encode-jack.sh} that uses mplayer, and illustrates
+how it is possible to encode a web-stream to \dabplus. JACK\footnote{The JACK
+    Audio Connection Kit is a virtual audio patch,
+\url{http://www.jack-audio.org}} is used to interconnect the stream decoder to
+the \dabplus encoder.
+
+This script is designed for production use, and also contains automatic restart
+logic in case of a failure.
+
 \subsubsection{Encoders at Programme Originator Studios}
+\subsubsection{Multi-capture Audio Card}
 
 \subsection{Single-Frequency Networks}
