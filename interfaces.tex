@@ -5,7 +5,8 @@ The first versions of these tools used files and pipes to exchange data. For
 offline generation of a multiplex or a modulated I/Q, it is possible to
 generate all files separately, one after the other.
 
-Here is an example to generate a two-minute ETI file for a multiplex containing two programmes:
+Here is an example to generate a two-minute ETI file for a multiplex containing
+two programmes:
 \begin{itemize}
     \item one DAB programme at 128kbps, encoded with Toolame-DAB
     \item one \dabplus{} programme at 88kbps, encoded with FDK-AAC-DABplus
@@ -51,7 +52,8 @@ services {
 }
 subchannels {
     sub-p1 {
-        type audio ; MPEG
+        ; MPEG
+        type audio
         inputfile "prog1.mp2"
         bitrate 128
         id 10
@@ -82,49 +84,53 @@ outputs { output1 "file://myfirst.eti?type=raw" }
 
 This file defines two components, that each link one service and one
 subchannel. The IDs and different protection settings are also defined.
+The bitrate defined in each subchannel must correspond to the bitrate set at
+the encoder.
 
-The bitrates defined in the subchannels must correspond to the bitrate set at the encoder.
+The duration of the ETI file is limited by the \lstinline{nbframes 5000}
+setting. Each frame corresponds to $24$\ms, and therefore $120 / 0.024 = 5000$
+frames are needed for $120$ seconds.
 
-The duration of the ETI file is limited by the \lstinline{nbframes 5000} setting. Each frame
-corresponds to $24$\ms, and therefore $120 / 0.024 = 5000$ frames are needed
-for $120$ seconds.
+The output is written to the file \filename{myfirst.eti} in the ETI(NI) format.
+Please see Appendix~\ref{etiformat} for more options.
 
-The output is written to the file \filename{myfirst.eti} in the ETI(NI) format. Please
-see Appendix~\ref{etiformat} for more options.
-
-To run the multiplexer, run:
+To run the multiplexer with this configuration, run:
 \begin{lstlisting}
-odr-dabmux -e 2programmes.mux
+odr-dabmux 2programmes.mux
 \end{lstlisting}
 
 This will generate the file \filename{myfirst.eti}, which will be $5000 * 6144
 \approx 30$\si{MB} in size.
 
-Congratulations! You have just created your first DAB multiplex! With the configuration file,
-adding more programmes is easy. More information is available in the \filename{doc/example.mux}
+Congratulations! You have just created your first DAB multiplex! With the
+configuration file, adding more programmes is easy. More information is
+available in the \filename{doc/example.mux}
 
 \subsection{Over the Network}
-In a real-time scenario, where the audio sources produce data continuously and the tools have to
-run at the native rate, it is not possible to use files anymore to interconnect the tools. For this
-usage, a network interconnection is available between the tools.
+In a real-time scenario, where the audio sources produce data continuously and
+the tools have to run at the native rate, it is not possible to use files
+anymore to interconnect the tools. For this usage, a network interconnection is
+available between the tools.
 
-This network connection is based on ZeroMQ, a library that permits the creation of a socket
-connection with automatic connection management (connection, disconnection, error handling).
-ZeroMQ uses a TCP/IP connection, and can therefore be used over any kind of IP networks.
+This network connection is based on ZeroMQ, a library that permits the creation
+of a socket connection with automatic connection management (connection,
+disconnection, error handling).  ZeroMQ uses a TCP/IP connection, and can
+therefore be used over any kind of IP networks.
 
-This connection makes it possible to put the different tools on different computers, but it is not
-necessary. It is also possible, and even encouraged to use this interconnection locally on the same
-machine.
+This connection makes it possible to put the different tools on different
+computers, but it is not necessary. It is also possible, and even encouraged to
+use this interconnection locally on the same machine.
 
 \subsubsection{Between Encoder and Multiplexer}
 
-Between FDK-AAC-DABplus and ODR-DabMux, the ZeroMQ connection transmits AAC superframes, with
-additional metadata that contains the audio level indication for monitoring purposes. The
-multiplexer cannot easily derive the audio level from the AAC bitstream without decoding it, so it
-makes more sense to calculate this in the encoder.
+Between FDK-AAC-DABplus and ODR-DabMux, the ZeroMQ connection transmits AAC
+superframes, with additional metadata that contains the audio level indication
+for monitoring purposes. The multiplexer cannot easily derive the audio level
+from the AAC bitstream without decoding it, so it makes more sense to calculate
+this in the encoder.
 
-The Toolame-DAB encoder also can send MPEG frames over ZeroMQ, but is not yet able to calculate and
-transmit audio level metadata yet.
+The Toolame-DAB encoder also can send MPEG frames over ZeroMQ, but is not yet
+able to calculate and transmit audio level metadata yet.
 
 On the multiplexer, the subchannel must be configured for ZeroMQ as follows:
 \begin{lstlisting}
@@ -140,64 +146,73 @@ sub-fb {
 }
 \end{lstlisting}
 
-The ZeroMQ input supports several options in addition to the ones of a subchannel that uses a file
-input. The options are:
+The ZeroMQ input supports several options in addition to the ones of a
+subchannel that uses a file input. The options are:
 
 \begin{itemize}
-    \item \texttt{inputfile}: This defines the interface and port on which to listen for incoming
-        data. It must be of the form \texttt{tcp://*:<port>}. Support for the \texttt{pgm://}
-        protocol is experimental, please see the \texttt{zmq\_bind} manpage for more information
-        about the protocols.
-    \item \texttt{zmq-buffer}: The ZeroMQ input handles an internal buffer for incoming data. The
-        maximum buffer size is given by this option, the units are AAC frames ($24$\ms). Therefore,
-        with a value of $40$, you will have a buffer of $40 * 24 = 960$\ms. The multiplexer will
-        never buffer more than this value, and will discard data one AAC superframe
+    \item \texttt{inputfile}: This defines the interface and port on which to
+        listen for incoming data. It must be of the form
+        \texttt{tcp://*:<port>}. Support for the \texttt{pgm://} protocol is
+        experimental, please see the \texttt{zmq\_bind} manpage for more
+        information about the protocols.
+    \item \texttt{zmq-buffer}: The ZeroMQ input handles an internal buffer for
+        incoming data. The maximum buffer size is given by this option, the
+        units are AAC frames ($24$\ms). Therefore, with a value of $40$, you
+        will have a buffer of $40 * 24 = 960$\ms. The multiplexer will never
+        buffer more than this value, and will discard data one AAC superframe
         ($5$ frames $= 100$\ms) when the buffer is full.
-    \item \texttt{zmq-prebuffering}: When the buffer is empty, the multiplexer waits until this
-        amount of AAC frames are available in the buffer before it starts to consume data.
+    \item \texttt{zmq-prebuffering}: When the buffer is empty, the multiplexer
+        waits until this amount of AAC frames are available in the buffer
+        before it starts to consume data.
 \end{itemize}
 
-The goal of having a buffer in the input of the multiplexer is to be able to absorb network latency
-jitter: Because IP does not guarantee anything about the latency, some packets will reach the
-encoder faster than others. The buffer can then be used to avoid disruptions in these cases, and its
-size should be adapted to the network connection. This has to be done in an empirical way, and is a
-trade-off between absolute delay and robustness.
+The goal of having a buffer in the input of the multiplexer is to be able to
+absorb network latency jitter: Because IP does not guarantee anything about the
+latency, some packets will reach the encoder faster than others. The buffer can
+then be used to avoid disruptions in these cases, and its size should be
+adapted to the network connection. This has to be done in an empirical way, and
+is a trade-off between absolute delay and robustness.
 
-If the encoder is running remotely on a machine, encoding from a sound card, it will encode at the
-rate defined by the sound card clock. This clock will, if no special precautions are taken, be
-slightly off frequency. The multiplexer however runs on a machine where the system time is
-synchronised over NTP, and will not show any drift or offset. Two situations can occur:
+If the encoder is running remotely on a machine, encoding from a sound card, it
+will encode at the rate defined by the sound card clock. This clock will, if no
+special precautions are taken, be slightly off frequency. The multiplexer
+however runs on a machine where the system time is synchronised over NTP, and
+will not show any drift or offset. Two situations can occur:
 
-Either the sound card clock is a bit slow, in which case the ZeroMQ buffer in the multiplexer will
-fill up to the amount given by \texttt{zmq-prebuffering}, and then start streaming data. Because the
-multiplexer will be a bit faster than the encoder, the amount of buffered data will slowly decrease,
-until the buffer is empty. Then the multiplexer will enter prebuffering, and wait again until the
-buffer is full enough. This will create an audible interruption, whose length corresponds to the
-prebuffering.
+Either the sound card clock is a bit slow, in which case the ZeroMQ buffer in
+the multiplexer will fill up to the amount given by \texttt{zmq-prebuffering},
+and then start streaming data. Because the multiplexer will be a bit faster
+than the encoder, the amount of buffered data will slowly decrease, until the
+buffer is empty. Then the multiplexer will enter prebuffering, and wait again
+until the buffer is full enough. This will create an audible interruption,
+whose length corresponds to the prebuffering.
 
-Or the sound card clock is a bit slow, and the buffer will be filled up faster than data is consumed
-by the multiplexer. At some point, the buffer will hit the maximum size, and one superframe will be
-discarded. This also creates an audible glitch.
+Or the sound card clock is a bit slow, and the buffer will be filled up faster
+than data is consumed by the multiplexer. At some point, the buffer will hit
+the maximum size, and one superframe will be discarded. This also creates an
+audible glitch.
 
-Consumer grade sound cards have clocks of varying quality. While these glitches would only occur
-sporadically for some, bad sound cards can provoke such behaviour in intervals that are not
-acceptable, e.g. more than once per hour.
+Consumer grade sound cards have clocks of varying quality. While these glitches
+would only occur sporadically for some, bad sound cards can provoke such
+behaviour in intervals that are not acceptable, e.g. more than once per hour.
 
-Both situations are suboptimal, because they lead to audio glitches, and also degrade the ability to
-compensate for network latency changes. It is preferable to use the drift compensation feature
-available in FDK-AAC-DABplus, which insures that the encoder outputs the AAC bitstream at the
-nominal rate, aligned to the NTP-synchronised system time, and not to the sound card clock. The
-sound card clock error is compensated for inside the encoder.
+Both situations are suboptimal, because they lead to audio glitches, and also
+degrade the ability to compensate for network latency changes. It is preferable
+to use the drift compensation feature available in FDK-AAC-DABplus, which
+insures that the encoder outputs the AAC bitstream at the nominal rate, aligned
+to the NTP-synchronised system time, and not to the sound card clock. The sound
+card clock error is compensated for inside the encoder.
 
 Complete examples of such a setup are given in the Scenarios.
 
 \subsubsection{Authentication Support}
-In order to be able to use the Internet as contribution network, some form of protection has to be
-put in place to make sure the audio data cannot be altered by third parties. Usually, some form of
-VPN is set up for this case.
+In order to be able to use the Internet as contribution network, some form of
+protection has to be put in place to make sure the audio data cannot be altered
+by third parties. Usually, some form of VPN is set up for this case.
 
-Alternatively, the encryption mechanism ZeroMQ offers can also be used. To do this, it is necessary
-to set up keys and to distribute them to the encoder and the multiplexer.
+Alternatively, the encryption mechanism ZeroMQ offers can also be used. To do
+this, it is necessary to set up keys and to distribute them to the encoder and
+the multiplexer.
 
 \begin{lstlisting}
     encryption 1
@@ -210,15 +225,17 @@ to set up keys and to distribute them to the encoder and the multiplexer.
 
 \subsubsection{Between Multiplexer and Modulator}
 
-The ZeroMQ connection can also be used to connect ODR-DabMux to one or more instances of ODR-DabMod.
-One ZeroMQ frame contains four ETI frames, which guarantees that the modulator always assembles the
-transmission frame in a correct way, even in Transmission Mode I, where four ETI frames are used
+The ZeroMQ connection can also be used to connect ODR-DabMux to one or more
+instances of ODR-DabMod.  One ZeroMQ frame contains four ETI frames, which
+guarantees that the modulator always assembles the transmission frame in a
+correct way, even in Transmission Mode I, where four ETI frames are used
 together.
 
 \subsection{Pipes}
 
-Pipes are an older real-time method to connect several encoders to one multiplexer on the same
-machine. It uses the same configuration as the file input but instead of using files, FIFOs, also
-called ``named pipes'' are created first using \texttt{mkfifo}.
+Pipes are an older real-time method to connect several encoders to one
+multiplexer on the same machine. It uses the same configuration as the file
+input but instead of using files, FIFOs, also called ``named pipes'' are
+created first using \texttt{mkfifo}.
 
 This setup is deprecated in favour of the ZeroMQ interface.
