@@ -131,30 +131,91 @@ it in steps of $3$dB or smaller while measuring the output signal, until the
 correct power is reached.
 
 \subsubsection{Other Hardware}
-The HackRF can also be used as a transmit platform. It's interfacing is not
-integrated with ODR-DabMod, and it only supports 8-bit samples. The
-configuration is a bit different. First, we must output signed 8-bit interleaved
-I/Q samples instead of 32-bit interleaved floats, and second, we cannot use UHD,
-but must go through a pipe to HackRF. The output settings inside the
-configuration are as shown:
+ODR-DabMod supports other radio interfaces using either standard output, or via
+a fifo -- the latter must be created prior to runtime with the \texttt{mkfifo} command.
+Due to limitations in the UHD driver library, \texttt{/dev/stdout} will only
+function correctly if ODR-DabMod is configured at compilation time with the
+following argument:
 
 \begin{lstlisting}
+--disable-output-uhd
+\end{lstlisting}
+
+ODR-DabMod has been tested to work with HackRF from Great Scott Gadgets on i386
+and x86 architectures.\footnote{HackRF has not been tested to any degree of
+    success with ARM-based computers at this time as they do not (yet) capable
+    of resampling to the required higher rates as the process is highly CPU
+    intensive.}
+The unit is an entry level yet versatile SDR which
+provides for $\approx10$MHz to $6$GHz frequency coverage. To use HackRF one must
+configure the output of ODR-DabMod to produce 8-bit signed integers, rather
+than the default complex floats.
+
+HackRF has selectable baseband filters, however the lowest filter setting
+($1.75$MHz) does not provide adequate image rejection at the native sampling rate of
+$2048$k samples per second. An appropriate rate to start with is $4096$k, and for
+some purposes this may well be adequate as this moves the image signals
+generated within the radio far enough into the stop-band of filter to attenuate
+them significantly. The digital gain in the ODR-DabMod configuration file should
+be set to a maximum of $2.4$ at this rate to avoid digital clipping on modulation
+peaks.
+
+Example of the settings in the \texttt{mod.ini} file suitable for use with HackRF:
+
+\begin{lstlisting}
+[remotecontrol]
+telnet=1
+telnetport=2121
+
+[input]
+transport=file
+source=myfirst.eti
+loop=1
+
+[modulator]
+gainmode=2
+digital_gain=2.4
+rate=4096000
+
+[firfilter]
+enabled=1
+filtertapsfile=filtertaps.txt
+
 [output]
 output=file
+
 [fileoutput]
 format=s8
-filename=/tmp/ofdm.fifo
+filename=/dev/stdout
+
 \end{lstlisting}
 
 The output fifo has to be created beforehand, and the \texttt{hackrf\_transfer}
 utility is then used to transmit the signal to the device. The options needed
 for the transmission utility are not complete yet. The rough idea would be:
 
+Depending on the capabilities of the host computer, using higher sampling rates
+($6144$k, and even $8192$k) may be possible. This oversampling is desirable as
+it helps to produce a cleaner spectral output. At higher rates one needs to
+ensure that samples are not being dropped on the USB and that CPU resources are
+not being contended. It is also important to note that the digital gain value
+must also be scaled accordingly as the sampling rate is increased.
+
+HackRF has been measured with shoulder performance at $\approx 35$dB, which is roughly
+equivalent to that obtained from first generation commercial modulators. This
+can be increased to a relatively respectable $\approx 40$dB by enabling the FIR filter
+in ODR-DabMod, and an appropriate coefficient file provided.
+
+
+Example of using ODR-DabMod with the \texttt{hackrf\_transfer} utility:
+
 \begin{lstlisting}
 mkfifo /tmp/ofdm.fifo
 odr-dabmod mod.ini &
-hackrf_transfer -f <frequency> -t /tmp/odr.fifo
+hackrf_transfer -t /tmp/ofdm.fifo -f 216928000 -x 47 \
+    -a 1 -s 4096000 -b 1750000
 \end{lstlisting}
+
 
 
 \subsection{Audio Sources}
