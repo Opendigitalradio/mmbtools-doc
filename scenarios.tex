@@ -189,13 +189,12 @@ output=file
 
 [fileoutput]
 format=s8
-filename=/dev/stdout
+filename=/tmp/ofdm.fifo
 
 \end{lstlisting}
 
 The output fifo has to be created beforehand, and the \texttt{hackrf\_transfer}
-utility is then used to transmit the signal to the device. The options needed
-for the transmission utility are not complete yet. The rough idea would be:
+utility is then used to transmit the signal to the device.
 
 Depending on the capabilities of the host computer, using higher sampling rates
 ($6144$k, and even $8192$k) may be possible. This oversampling is desirable as
@@ -208,7 +207,6 @@ HackRF has been measured with shoulder performance at $\approx 35$dB, which is r
 equivalent to that obtained from first generation commercial modulators. This
 can be increased to a relatively respectable $\approx 40$dB by enabling the FIR filter
 in ODR-DabMod, and an appropriate coefficient file provided.
-
 
 Example of using ODR-DabMod with the \texttt{hackrf\_transfer} utility:
 
