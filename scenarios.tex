@@ -62,7 +62,7 @@ gainmode=2
 digital_gain=0.8
 
 [firfilter]
-enabled=1
+enabled=0
 filtertapsfile=simple_taps.txt
 
 [output]
@@ -86,8 +86,11 @@ This example also shows more options that the example for the file output:
         overshoots in the output.
     \item \texttt{digital\_gain=0.8} reduces the output sample deviation, to
         reduce compression in the USRP.
-    \item \texttt{firfilter enabled=1} enables an additional FIR filter to
-        improve the spectrum mask.
+    \item \texttt{firfilter enabled=0} can be set to 1 to enable an additional
+        FIR filter to improve the spectrum mask. This filter needs a file
+        containing the filter taps, which can be generated using
+        \texttt{ODR-DabMux/doc/fir-filter/generate-filter.py}. An example taps
+        file is also available in this folder.
     \item \texttt{master\_clock\_rate=32768000} sets the USRP internal clock to
         a multiple of $2048000$, which is required if we want to use the native
         DAB sample rate.
