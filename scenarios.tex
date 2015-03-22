@@ -221,8 +221,29 @@ hackrf_transfer -t /tmp/ofdm.fifo -f 216928000 -x 47 \
 
 \subsection{Audio Sources}
 Preparing a DAB multiplex with different programmes requires that we are able to
-read and encode several audio sources. This audio data can reach the multiplexer
-in different ways. We will go over different possibilities in this part.
+read and encode several audio sources. We have seen in
+section~\ref{sec:between_encoder_and_multiplexer} how the encoders can be
+interfaced to the modulator. In this section we'll go through the different ways
+to carry the audio data to the encoder.
+
+\subsubsection{Local Audio Card}
+It is possible to use an audio card connected to the computer as source. For
+very simple scenarios, the ALSA input for FDK-AAC-DABplus is easiest to set up.
+This however limits the usage of a single encoder per sound-card, and will not
+scale well if more than one programme has to be encoded on the machine. It is
+however ideal for dedicated encoding machines that can contribute the encoded
+audio over an IP network.
+
+An alternative to using ALSA is JACK\footnote{The JACK Audio Connection Kit is a
+    virtual audio patch, \url{http://www.jack-audio.org}}
+that can be used with a multi-channel sound card. JACK will expose every audio
+input channel, and several encoders can be launched that also connect to JACK.
+The input channels can be freely connected to the encoders thanks to the virtual
+JACK patch panel.
+
+\sidenote{It might be possible to use the libVLC input too, to be defined.}
+FDK-AAC-DABplus supports JACK and ALSA input, but Toolame-dab supports only the
+JACK input.
 
 \subsubsection{Using Existing Web-Streams}
 One common scenario is to transmit radio stations that already are available as
@@ -240,18 +261,37 @@ is most often $48000\Hz$ or sometimes $32000\Hz$. A sample-rate conversion is
 necessary in the stream decoder.
 
 There are many different stream decoders, and gstreamer, mpg123 and mplayer have
-been tested. We have achieved good results with mplayer, and the dab-scripts
-repository\footnote{\url{http://github.com/Opendigitalradio/dab-scripts}}
-contain the script \texttt{encode-jack.sh} that uses mplayer, and illustrates
-how it is possible to encode a web-stream to \dabplus. JACK\footnote{The JACK
-    Audio Connection Kit is a virtual audio patch,
-\url{http://www.jack-audio.org}} is used to interconnect the stream decoder to
-the \dabplus encoder.
+been tested. By far the easiest way is to use the libVLC binding that can be
+compiled for Toolame-dab and FDK-AAC-DABplus. This library has
+the same features as the VLC audio player, but the audio data is directly passed
+to the encoding routines. This allows the encoder to receive all network
+sources VLC supports, not only HTTP web-streams but also less common setups
+e.g.\ encoded audio inside multicast UDP MPEG-TS.
+This is illustrated in ``Studio A'' in figure~\ref{fig:txchain-with-encoders}.
 
-This script is designed for production use, and also contains automatic restart
-logic in case of a failure.
+We have also achieved good results with mplayer, and the dab-scripts
+repository\footnote{\url{http://github.com/Opendigitalradio/dab-scripts}}
+contains the script \texttt{encode-jack.sh} that uses mplayer, and illustrates
+how it is possible to encode a web-stream to \dabplus. JACK is used to
+interconnect the stream decoder to the \dabplus encoder.
+This is illustrated in ``Studio B''.
+
+\begin{figure}[h]
+    \includegraphics[width=\textwidth]{figures/txchain-with-encoders.pdf}
+    \caption{Three common ways to encode a remote audio sources.}
+    \label{fig:txchain-with-encoders}
+\end{figure}
+
+
+The scripts are designed for production use, and also contain automatic restart
+logic in case of a failure. They send an email and write a message into the
+system log.
 
 \subsubsection{Encoders at Programme Originator Studios}
-\subsubsection{Multi-capture Audio Card}
+In order to avoid the unavoidable encoder cascading when using mp3 web-streams,
+the DAB or \dabplus encoder has to be moved to the programme originator's
+premises, and should directly encode the audio signal coming from the studios.
+This is illustrated in ``Studio C'' in figure~\ref{fig:txchain-with-encoders}.
+
 
 \subsection{Single-Frequency Networks}
