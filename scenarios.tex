@@ -154,18 +154,21 @@ following argument:
 --disable-output-uhd
 \end{lstlisting}
 
-ODR-DabMod has been tested working with HackRF from Great Scott Gadgets on i386
-and x86 architectures.\footnote{HackRF has not been tested to any degree of
-    success with ARM-based computers at this time as they are not (yet) capable
-    of resampling to the required higher rates as the process is highly CPU
-    intensive.}
-The unit is an entry level yet versatile SDR which provides coverage between
-$\approx10$MHz to $6$GHz frequency coverage, and viable DAB signals been 
-generated with it in VHF Band III (174-240 MHz) L-Band (1462 - 1467.5 MHz) and 
-even the worldwide ISM Band (2400 - 2500 MHz). The latter (subject to your local
-regulations) is a licence exempt band which may be useful for performing freely
-radiating tests. Cheap MMDS down-converters are currently available which usefully
-provide a Band III IF output for DAB receivers.
+ODR-DabMod has been tested working with HackRF from Great Scott Gadgets on i386 and
+x86 architectures.\footnote{HackRF has not been tested to any degree of success 
+with ARM-based computers at this time as they are not (yet) capable of resampling 
+to the required higher rates as the process is highly CPU intensive.}
+
+The unit is an entry level yet versatile SDR which provides coverage between 
+$\approx10$MHz to $6$GHz, and DAB signals been successfully generated with it in 
+VHF Band III (174-240 MHz), L-Band (1462 - 1467.5 MHz) and even the worldwide ISM
+Band (2400 - 2500 MHz). The latter (subject to local regulations) is a licence exempt
+band which may be useful for performing freely radiating tests at low power. Cheap 
+MMDS converters are currently available which helpfully provide a Band III IF output
+providing a direct feed to the aerial input of a receiver. Before choosing a converter
+it is important to pay close attention to the specifications. The local oscillator 
+phase noise performance, and the dynamic range (due to the heavy use of the band) are
+both particularly important.   
 
 To use HackRF, the output of ODR-DabMod must be set (in the configuration file) to
 produce 8-bit signed integers, rather than the default complex floats.
