@@ -155,24 +155,23 @@ following argument:
 \end{lstlisting}
 
 ODR-DabMod has been tested working with HackRF from Great Scott Gadgets on i386 and
-x86 architectures.\footnote{HackRF has not been tested to any degree of success 
-with ARM-based computers at this time as they are not (yet) capable of resampling 
+x86 architectures.\footnote{HackRF has not been tested to any degree of success
+with ARM-based computers at this time as they are not (yet) capable of resampling
 to the required higher rates as the process is highly CPU intensive.}
 
-The unit is an entry level yet versatile SDR which provides coverage between 
-$\approx10$MHz to $6$GHz, and DAB signals been successfully generated with it in 
-VHF Band III (174-240 MHz), L-Band (1462 - 1467.5 MHz) and even the worldwide ISM
-Band (2400 - 2500 MHz). The latter (subject to local regulations) is a licence exempt
-band which may be useful for performing freely radiating tests at low power. Cheap 
+The unit is an entry level yet versatile SDR which provides coverage between
+$\approx10$MHz to $6$GHz, and DAB signals been successfully generated with it in
+VHF Band III ($174$--$240$MHz), L-Band ($1462$--$1467.5$MHz) and even the worldwide ISM
+Band ($2400$--$2500$MHz). The latter (subject to local regulations) is a licence exempt
+band which may be useful for performing freely radiating tests at low power. Cheap
 MMDS converters are currently available which helpfully provide a Band III IF output
 providing a direct feed to the aerial input of a receiver. Before choosing a converter
-it is important to pay close attention to the specifications. The local oscillator 
+it is important to pay close attention to the specifications. The local oscillator
 phase noise performance, and the dynamic range (due to the heavy use of the band) are
-both particularly important.   
+both particularly important.
 
 To use HackRF, the output of ODR-DabMod must be set (in the configuration file) to
 produce 8-bit signed integers, rather than the default complex floats.
-
 HackRF has selectable baseband filters, however the lowest filter setting
 ($1.75$MHz) does not provide adequate image rejection at the native sampling rate of
 $2048$k samples per second. An appropriate rate to start with is $4096$k, and for
@@ -220,24 +219,30 @@ Depending on the capabilities of the host computer, using higher sampling rates
 it helps to produce a cleaner spectral output. At higher rates one needs to
 ensure that samples are not being dropped on the USB and that CPU resources are
 not being contended. It is also important to note that the digital gain value
-must also be scaled accordingly as the sampling rate is increased. Two sets of 
-values are provided which reflect the theoretical values, and the second set 
-given in parentheses are empirical maximum values determined while monitoring 
-shoulder performance (measured Δ970 kHz from the centre frequency) using a 
-spectrum analyser in ~3 kHz resolution bandwidth. The Digital gain figures for
-the tested sampling rates are shown below:
+must also be scaled accordingly as the sampling rate is increased. Two sets of
+values are provided which reflect the theoretical values, and the second set
+given in parentheses are empirical maximum values determined while monitoring
+shoulder performance (measured at $970$kHz offset from the centre frequency)
+using a spectrum analyser in $\approx 3$ kHz resolution bandwidth. The digital
+gain figures for the tested sampling rates are shown below:
 
-Rate        Dgain   Max Dgain (Empirical)
-4096 ksps    2.0     2.25   
-6144 ksps    3.0     3.37 
-8192 ksps    4.0     4.50
+\begin{center}
+\begin{tabular}{| l | c | c |}
+    \hline
+    Rate       & Dgain & Max Dgain (Empirical) \\ \hline \hline
+    $4096$ksps & $2.0$ & $2.25$ \\ \hline
+    $6144$ksps & $3.0$ & $3.37$ \\ \hline
+    $8192$ksps & $4.0$ & $4.50$ \\
+    \hline
+\end{tabular}
+\end{center}
 
 The shoulder performance has been measured with shoulder performance at a little
-better than $35$dB, which is roughly equivalent to that obtained from first 
-generation commercial modulator equipment. This can be increased to a relatively 
-respectable $\approx 40$dB by enabling the FIR baseband filter in ODR-DabMod, 
+better than $35$dB, which is roughly equivalent to that obtained from first
+generation commercial modulator equipment. This can be increased to a relatively
+respectable $\approx 40$dB by enabling the FIR baseband filter in ODR-DabMod,
 and supplying it with an appropriate coefficient (tap) file. The maximum output
-power available to mmet these performance figures is approximately -10dBm RMS.
+power available to mmet these performance figures is approximately $-10$dBm RMS.
 
 Example of using ODR-DabMod with the \texttt{hackrf\_transfer} utility:
 
