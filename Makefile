@@ -2,7 +2,8 @@ latexfile = mmbtools
 includes = introduction.tex \
 		   interfaces.tex \
 		   scenarios.tex \
-		   appendix.tex
+		   appendix.tex \
+		   systemenvironments.tex
 
 bib = dab.bib
 
