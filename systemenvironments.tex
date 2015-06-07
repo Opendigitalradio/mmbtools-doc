@@ -1,9 +1,9 @@
 \section{System Environment}
 
-In this section, we describe the system configuration requirements for the 
-continuous operation of the tools. The production environment differs in some 
+In this section, we describe the system configuration requirements for the
+continuous operation of the tools. The production environment differs in some
 respects to those used for experimentation and in laboratory testing. Monitoring,
-automatic recovery (in case of errors) and resiliance are crucial in 24/7 
+automatic recovery (in case of errors) and resilience are crucial in 24/7
 operations. The term \emph{production environment} will be used here to refer to
 such use.
 
@@ -11,35 +11,34 @@ such use.
 
 Services running in a production environment are usually administered remotely,
 and must be able to run without user intervention, or connection. Traditionally,
-such services are implemented (in UNIX terminology) as 'daemons'. These are 
-started and stopped using the init system contained within the distribution. 
+such services are implemented (in UNIX terminology) as `daemons'. These are
+started and stopped using the init system contained within the distribution.
 The ODR-mmbTools cannot daemonise themselves, so this requires another approach:
 
 \paragraph{Screen multiplexer}
 A simple approach is to use a screen multiplexer such as \emph{GNU Screen} or
-\emph{tmux} - either of these can be used to launch a session from which the 
-user can detach, and later re-attach at will - leaving the tools running within 
+\emph{tmux} - either of these can be used to launch a session from which the
+user can detach, and later re-attach at will - leaving the tools running within
 it. Please see the relevant manpages for more information.
 
-Although a screen multiplexer alone permits the tools to run without a user 
+Although a screen multiplexer alone permits the tools to run without a user
 being connected, it alone cannot automatically restart failed processes, and it
-is unable to provide warnings in the case of a problem. 
+is unable to provide warnings in the case of a problem.
 
-The dab-scripts \footnote{The dab-scripts are available on the Opendigitalradio 
-github.} ,already mentioned in \ref{usingexistingwebstreams}, can be employed to
-monitor the processes and (if necessary) restart them, and send an alert via 
-email.
+The dab-scripts, already mentioned in \ref{usingexistingwebstreams}, can be
+employed to monitor the processes and (if necessary) restart them, and send an
+alert via email.
 
 \paragraph{supervisord}
-As an alternative to using the scripts, the execution of the tools can also be 
+As an alternative to using the scripts, the execution of the tools can also be
 carried out by a dedicated tool. \texttt{supervisor}\footnote{\url{http://supervisord.org}}
 is (as the name implies) such a tool.
 
 Once installed, supervisor reads its configuration file in \texttt{/etc/supervisor.conf}
-and launches the processes that are to be monitored. Each process is described 
+and launches the processes that are to be monitored. Each process is described
 by a file. The following example assumes the tools are run as user \texttt{odr},
-and that the multiplex configuration is in \texttt{/home/odr/config.mux}, and 
-that ODR-DabMux is to be launched.The logs of ODR-DabMux is written to the 
+and that the multiplex configuration is in \texttt{/home/odr/config.mux}, and
+that ODR-DabMux is to be launched.The logs of ODR-DabMux is written to the
 specified log files.
 
 \begin{lstlisting}
@@ -66,9 +65,9 @@ be added:
 supervisorctl add ODR-DabMux
 \end{lstlisting}
 
-Setting up more processes (such as any of the other tools) can be easily 
+Setting up more processes (such as any of the other tools) can be easily
 achieved by customising the configuration template above. Examples are provided
-in the \texttt{mmbtools-aux} repository, under the \texttt{supervisor} folder - 
+in the \texttt{mmbtools-aux} repository, under the \texttt{supervisor} folder -
 these need to be changed to reflect the paths that are in use on your system.
 
 supervisor also includes a small web-server that can display the state of the
@@ -78,36 +77,36 @@ the configuration file.
 \subsection{Logging}
 Collecting information about events is essential within a production environment.
 This information is essential forensic analysis, and tracing sources of trouble.
-This is achieved through the logging of important messages that can be sent by 
+This is achieved through the logging of important messages that can be sent by
 the tools.
 
 ODR-DabMux and ODR-DabMod both support logging to standard error, to a file and
 to the system logger \texttt{syslog}. Logging to syslog is the most flexible
 approach; log information can be forwarded over the network to a
-centralised logging server - where logs can then be filtered according to the 
-priority of each message. Both tools log to the LOCAL0 facility which in turn 
+centralised logging server - where logs can then be filtered according to the
+priority of each message. Both tools log to the LOCAL0 facility which in turn
 can be redirected into an ODR-mmbtools specific log file.
 
 \sidenote{Describe rsyslog configuration}
 
 In order to avoid the log files from becomming undesirably large, \texttt{logrotate}
-should be set to rotate the files automatically. 
+should be set to rotate the files automatically.
 
 \sidenote{Describe logrotate configuration}
 
 
 \subsection{Timing}
-The ODR-mmbTools require the system time to be accurate in order for them to 
-function correctly - this is especially important when running a SFN, but is 
+The ODR-mmbTools require the system time to be accurate in order for them to
+function correctly - this is especially important when running a SFN, but is
 also important for standalone transmitters when in a production environment. It
-is also important to remember that most receivers have a clock that is 
-synchronised to the clock time which is being transmitted by the multiplex to 
+is also important to remember that most receivers have a clock that is
+synchronised to the clock time which is being transmitted by the multiplex to
 which it has been tuned.
 
 The system needs to run a NTP client that synchronises the system time over the
 network. Correct synchronisation can be checked using the \texttt{lpeers}
-command of the \texttt{ntpq} tool. The magnitude of the offset should be below 
-10 mS.
+command of the \texttt{ntpq} tool. The magnitude of the offset should be below
+$10$\ms.
 
 The performance of the NTP synchronisation should also be monitored permanently
 during operation.
@@ -125,8 +124,8 @@ synchronisation, disk and network performance (and much more besides), there
 are also custom data sources for ODR-DabMux;
 
 These data sources include ZMQ input buffer monitoring (buffer level, underruns
-and overruns) and the peak audio input levels (mono, or stereo). This data 
-source can be installed by copying \verb+doc/stats_dabmux_multi.py+ to
+and overruns) and the peak audio input levels (mono, or stereo). It
+can be installed by copying \verb+doc/stats_dabmux_multi.py+ to
 \texttt{/etc/munin/plugins.d}. They require that the ODR-DabMux management
 server is enabled in the configuration, and will automatically generate the
 graphs for the subchannels used in the configuration.
@@ -135,7 +134,7 @@ graphs for the subchannels used in the configuration.
 \subsection{Real-time Scheduling}
 
 As a general principle, it is prudent not to run tools (that do not need superuser
-privileges) as the \texttt{root} user. The same principle also applies to the 
+privileges) as the \texttt{root} user. The same principle also applies to the
 ODR-mmbTools, but care has to be taken that the tools can still request real-time
 scheduling when it is needed.
 
@@ -147,21 +146,20 @@ odr          -       rtprio          65
 odr          -       nice           -10
 \end{lstlisting}
 
-If you have installed JACK with real-time privileges, you may find this has 
-already been configured for the 'audio' group, written as \texttt{@audio}, which
-should suffice providing your desired user is a member of the @audio group.
+If you have installed JACK with real-time privileges, you may find this has
+already been configured for the `audio' group, written as \texttt{@audio}, which
+should suffice providing your desired user is a member of the `audio' group.
 
 \subsection{Accessing the USRP as Non-root}
 
 Superuser privileges are not required to access USB-connected USRP devices, but
 sometimes the system lacks the configuration to enable normal users to
 communicate with the device.
-
 In that case, it is necessary to add a rule file for \texttt{udev}. This file is
 included in the UHD sources, but might not have been automatically installed.
-
 The file is called \texttt{10-uhd-usrp.rules}, should be placed into
 \texttt{/etc/udev/rules.d/} and should contain
+
 { \footnotesize
 \begin{verbatim}
 #USRP1
