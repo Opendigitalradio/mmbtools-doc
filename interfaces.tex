@@ -24,7 +24,7 @@ The DAB+ programme is encoded to \filename{prog2.dabp}. The extension
 other AAC encoded audio, it makes sense to use a special extension. The command
 is:
 \begin{lstlisting}
-dabplus-enc -i prog2.wav -b 88 -a o prog2.dabp
+dabplus-enc -i prog2.wav -b 88 -o prog2.dabp
 \end{lstlisting}
 
 These resulting files can then be used with ODR-DabMux to create an ETI file.
@@ -188,7 +188,7 @@ buffer is empty. Then the multiplexer will enter prebuffering, and wait again
 until the buffer is full enough. This will create an audible interruption,
 whose length corresponds to the prebuffering.
 
-Or the sound card clock is a bit slow, and the buffer will be filled up faster
+Or the sound card clock is a bit fast, and the buffer will be filled up faster
 than data is consumed by the multiplexer. At some point, the buffer will hit
 the maximum size, and one superframe will be discarded. This also creates an
 audible glitch.
@@ -204,7 +204,7 @@ insures that the encoder outputs the AAC bitstream at the nominal rate, aligned
 to the NTP-synchronised system time, and not to the sound card clock. The sound
 card clock error is compensated for inside the encoder.
 
-Complete examples of such a setup are given in the Scenarios.
+Complete examples of such a setup are given in the scenarios.
 
 \subsubsection{Authentication Support}
 In order to be able to use the Internet as contribution network, some form of
@@ -240,3 +240,5 @@ input but instead of using files, FIFOs, also called ``named pipes'' are
 created first using \texttt{mkfifo}.
 
 This setup is deprecated in favour of the ZeroMQ interface.
+
+% vim: spl=en spell tw=80 et

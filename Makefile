@@ -3,7 +3,8 @@ includes = introduction.tex \
 		   interfaces.tex \
 		   scenarios.tex \
 		   appendix.tex \
-		   systemenvironments.tex
+		   systemenvironments.tex \
+		   sfn.tex
 
 bib = dab.bib
 
