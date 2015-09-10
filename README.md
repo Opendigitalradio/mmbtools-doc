@@ -8,5 +8,7 @@ global perspective.
 
 It also complements the opendigitalradio.org wiki.
 
-It is a work in progress. No version has been released yet.
+It is a work in progress. No version has been released yet, but the compiled
+document in its current form is available at
+http://www.opendigitalradio.org/releases/mmbtools.pdf
 
