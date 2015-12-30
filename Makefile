@@ -12,7 +12,7 @@ all: $(latexfile).pdf
 
 $(latexfile).pdf : $(bib) $(latexfile).tex vc.tex $(includes)
 	while ( \
-		pdflatex $(latexfile) ; \
+		pdflatex -halt-on-error $(latexfile) ; \
 		bibtex $(latexfile) ; \
 		grep -q "Rerun to get cross" $(latexfile).log \
 	) do true ; \
