@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Opendigitalradio/mmbtools-doc.svg?branch=master)](https://travis-ci.org/Opendigitalradio/mmbtools-doc)
 Documentation for ODR-mmbTools
 ==============================
 
