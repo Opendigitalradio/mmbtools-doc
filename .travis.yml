@@ -1,12 +1,15 @@
 language: c
 sudo: required
 dist: trusty
-
 before_install:
-    - "sudo apt-get update && sudo apt-get install -y --no-install-recommends texlive-fonts-recommended texlive-latex-extra texlive-fonts-extra texlive-latex-recommended texlive-science dvipng"
-
+- sudo apt-get update && sudo apt-get install -y --no-install-recommends texlive-fonts-recommended
+  texlive-latex-extra texlive-fonts-extra texlive-latex-recommended texlive-science
+  dvipng cm-super
 script:
-  - |
-    make
-
-
+- |
+  make
+  bash .travis-deploy.sh
+env:
+  global:
+    - GH_REF: github.com/Opendigitalradio/mmbtools-doc.git
+    - secure: z2nAH5qIltqdv3FzEoxznkVX64yULzK2qQqmZdGaSbkqNonj8TbgGYXW25hx5L50tvpoqr9yLbDQv1tA+OeZueLWDaUkB7yTonCu92PFczUsGnf60TYc0kRoXORgGnM8CPcjNsEdrkWnbCOvHWj6rnFBgsnpA3n3a4O5ZU+ec2j8GGClVMTT+Cf63QT6ruGAVSKmk0BCLwqj8Ux2clL+0h2hUQV+AH3DNdfKuAeKjglBbyqKeklDvXvcVM8gBf7Q22lh6cs/pEnFxHULOdZROepeK909/fgfzar522fQMmmRuBeck/InhEZiuRi+KgEOxAEqC3ZTalLDH9gHqxDYQgqZX5C4NX0qowRgWnjSSrNDbgM1QsTfX89w2OoQyQ/gd6OzCkPEmM4YRsHS8UnowjsTLl5Qt7TbeAWfv6bVimdfOyvQpdOL3d70kQUdE/WZfehdaDM2wtYTsfYCckbw7EBgwrGU3LHABnY06cPOi36Bh9kmuNoMSGt0/LrL306OrLbcSquUCcrgKkwbnJlXK2R1oLsxEOiAzfsmXdsJB5kcBO9AApGU/b8oG8L4PDyqpe17czN9edg2vlmNIlvIhZAEUXGRMJYbmFJMi9lT3pfyMsw/V7zVPgMbwjSKsblm3Gt7wtgqaFoBdZr+qR5p2Dad4sdgP3LRSYi9ps6QFlc=
