@@ -141,8 +141,44 @@ therefore rewrite the above equation as:
 
 \sidenote{Explain relationship with ZeroMQ max buffer size}
 
-\subsection{Using Ettus GPSDO}
 \subsection{Using ODR LEA-M8F GPSDO board}
+
+The ODR GPSDO board integrating a u-blox LEA-M8F module can be used as time and
+frequency reference for the USRP B200. \sidenote{TODO: Add Picture}
+The board design is available on the Opendigitalradio website, with
+a bill of materials describing how to source the components. The PCB itself can
+be manufactured in any PCB fab.
+
+The module includes the correct pin header so that it can be mounted directly
+onto the USRP B200, but also includes footprints for SMA connectors for other
+usages. Communication between the PC and the GPS is possible through USB or over
+UART through the B200.
+
+The u-blox LEA-M8F module is a GPS disciplined TCXO module, with a one-pulse per
+second and a reference clock output at a frequency of $30.72$ MHz. This is
+different than what the normal USRP firmware expects.
+
+Because the UART communication protocol and the reference clock frequency are
+different than for the GPSDO units Ettus supports, a modified version of UHD is
+necessary. This version includes new UHD sensors, used by ODR-DabMod to verify
+that the GPSDO is locked properly, and different configuration settings for the
+clock management PLL inside the USRP, making the USRP compatible to the
+$30.72$MHz reference clock frequency.
+
+The modified UHD version is available at
+\url{http://www.github.com/Opendigitalradio/uhd.git} and replaces Ettus' UHD.
+
+ODR-DabMod can be configured as follows:
+\begin{lstlisting}
+[uhdoutput]
+refclk_source=gpsdo
+pps_source=gpsdo
+behaviour_refclk_lock_lost=crash
+max_gps_holdover_time=600
+\end{lstlisting}
+
+
+\subsection{Using Ettus GPSDO}
 
 \sidenote{Give example}
 
