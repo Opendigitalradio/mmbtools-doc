@@ -74,12 +74,13 @@ become very difficult, if not impossible to acquire licences for the
 available, which was part of Google's Android sources. This encoder has been
 extended with the necessary \dabplus{}-specific requirements (960-transform,
 error correction, framing, etc.), and now exists under the name
-\mbox{FDK-AAC-DABplus}.
+\mbox{fdk-aac}. The encoder \mbox{ODR-AudioEnc} can use this library to encoder
+\dabplus{}.
 
 \subsection{Included Tools}
 The \mmbtools are composed of several software projects:
 \mbox{ODR-DabMux}, \mbox{ODR-DabMod},
-\mbox{Toolame-DAB}, \mbox{FDK-AAC-DABplus}, and other scripts, bits and pieces
+\mbox{ODR-AudioEnc}, \mbox{ODR-PadEnc}, and other scripts, bits and pieces
 that are useful for the setup of a transmission chain.
 
 \subsubsection{ODR-DabMux}
@@ -110,23 +111,24 @@ output. Other SDR platforms can be used if they are able to accept the I/Q data.
 The output of the modulator can also be used in GNURadio if format conversion or
 graphical analysis (spectrum) is to be done.
 
-\subsubsection{Toolame-DAB}
-TooLAME is a MPEG-1 Layer II audio encoder that is used to encode audio for the
-DAB standard. The original project has been unmaintained since 2003, but the
-twolame fork that pursues the development removed the DAB framing. Because of
-this, twolame is not suitable for DAB.
+\subsubsection{ODR-AudioEnc}
+The ODR-AudioEnc encoder can be used to encode for DAB and \dabplus. It includes
+a toolame-based MPEG encoder, and uses the \mbox{fdk-aac} library as an external
+dependency to encode \dabplus{}.
 
-The Toolame-DAB fork includes the ZeroMQ output and PAD insertion support, but
-the audio coder is the same as the one in tooLAME.
+The integrated TooLAME library is a MPEG-1 Layer II audio encoder that is used
+to encode audio for the DAB standard. The original project has been unmaintained
+since 2003, but the twolame fork that pursues the development removed the DAB
+framing. Because of this, twolame is not suitable for DAB.
 
-\subsubsection{FDK-AAC-DABplus}
-The FDK-AAC-DABplus encoder can be used to encode for \dabplus. The encoder
-itself comes from the Android sources, and was written by Fraunhofer.
-
-The necessary framing and error-correction that \dabplus mandates, the PAD
+The necessary framing and error-correction that \dabplus{} mandates, the PAD
 insertion, the ZeroMQ output and the ALSA input were then added by different
 parties.
 
+\subsubsection{ODR-PadEnc}
+This encoder is able to generate programme associated data that can be injected
+into ODR-AudioEnc. It supports DLS, reading from a file, and MOT Slideshow,
+where the slides are read from a folder.
 
 
 % vim: spl=en spell tw=80 et

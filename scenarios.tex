@@ -263,7 +263,7 @@ to carry the audio data to the encoder.
 
 \subsubsection{Local Audio Card}
 It is possible to use an audio card connected to the computer as source. For
-very simple scenarios, the ALSA input for FDK-AAC-DABplus is easiest to set up.
+very simple scenarios, the ALSA input for ODR-AudioEnc is easiest to set up.
 This however limits the usage of a single encoder per sound-card, and will not
 scale well if more than one programme has to be encoded on the machine. It is
 however ideal for dedicated encoding machines that can contribute the encoded
@@ -277,8 +277,6 @@ The input channels can be freely connected to the encoders thanks to the virtual
 JACK patch panel.
 
 \sidenote{It might be possible to use the libVLC input too, to be defined.}
-FDK-AAC-DABplus supports JACK and ALSA input, but Toolame-dab supports only the
-JACK input.
 
 \subsubsection{Using Existing Web-Streams}
 \label{usingexistingwebstreams}
@@ -298,7 +296,7 @@ necessary in the stream decoder.
 
 There are many different stream decoders, and gstreamer, mpg123 and mplayer have
 been tested. By far the easiest way is to use the libVLC binding that can be
-compiled for Toolame-dab and FDK-AAC-DABplus. This library has
+compiled for ODR-AudioEnc. This library has
 the same features as the VLC audio player, but the audio data is directly passed
 to the encoding routines. This allows the encoder to receive all network
 sources VLC supports, not only HTTP web-streams but also less common setups
