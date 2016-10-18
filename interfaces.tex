@@ -17,7 +17,7 @@ We assume that the audio data for the two programmes is located in uncompressed
 48kHz WAV in the files \filename{prog1.wav} and \filename{prog2.wav}. The first step
 is to encode the audio. The DAB programme is encoded to \filename{prog1.mp2} using:
 \begin{lstlisting}
-odr-audioenc --dab -b 128 prog1.wav prog1.mp2
+odr-audioenc --dab -b 128 -i prog1.wav -o prog1.mp2
 \end{lstlisting}
 
 The DAB+ programme is encoded to \filename{prog2.dabp}. The extension
