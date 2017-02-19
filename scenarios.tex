@@ -16,11 +16,12 @@ To modulate the file \texttt{myfirst.eti} into \texttt{myfirst.iq}, with the
 default options, the command is simply
 
 \begin{lstlisting}
-odr-dabmod myfirst.eti -f myfirst.iq
+odr-dabmod myfirst.eti -f myfirst.iq -n 1
 \end{lstlisting}
 
-This will create a file containing 16-bit interleaved I/Q at $2048000$ samples
-per second. The transmission mode is defined by the ETI file.
+This will create a file containing 32-bit interleaved I/Q at $2048000$ samples
+per second. Where the maximal amplitude is bounded by 1.The transmission mode
+is defined by the ETI file. 
 
 The equivalent configuration file would be
 \begin{lstlisting}
@@ -32,6 +33,8 @@ source=myfirst.eti
 output=file
 
 [fileoutput]
+format=complexf
+normalize=1
 filename=myfirst.iq
 \end{lstlisting}
 
