@@ -1,0 +1,25 @@
+% LICENSE: see LICENCE
+\section{Data Features}
+\subsection{Announcements}
+The ODR-DabMux multiplexer supports the insertion of FIG 0/18 and FIG 0/19 that
+are used to define and trigger announcements according to ETSI TR 101 496-2
+Clause 3.6.8~\cite{etsitr1014962}.
+An example configuration is available in the ODR-DabMux repository, in
+\texttt{doc/advanced.mux}.
+
+The best known application for announcements is traffic information, but other
+kinds of announcements can also be signalled. ODR-DabMux allows triggering the
+announcements through the telnet and ZMQ remote control interfaces.
+
+\subsection{Service Linking}
+ODR-DabMux also supports the ability to inform receivers about other ways to
+receive a given service, through the FIGs 0/6, 0/21 and 0/24. FIG 0/6
+communicates the identifiers of services linked together, 0/21 informs the
+receiver about other frequencies, and 0/24 includes information about other DAB
+ensembles carrying the linked service.
+Their interaction is outlined in ETSI TS 103 176~\cite{etsits103176}.
+
+You will find an example configuration in the ODR-DabMux repository, in
+\texttt{doc/servicelinking.mux}.
+
+% vim: spl=en spell tw=80 et
