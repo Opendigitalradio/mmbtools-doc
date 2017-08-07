@@ -16,3 +16,8 @@ It is a work in progress. No version has been released yet, but the
 document gets compiled automatically by Travis-CI and uploaded to
 http://opendigitalradio.github.io/mmbtools-doc/mmbtools.pdf
 
+
+Acknowledgements
+----------------
+ * Rash for proof-reading
+ * Wim Nelis for the section about Monitoring using Xymon
