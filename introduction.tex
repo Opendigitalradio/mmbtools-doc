@@ -84,6 +84,20 @@ The \mmbtools are composed of several software projects:
 \mbox{ODR-AudioEnc}, \mbox{ODR-PadEnc}, and other scripts, bits and pieces
 that are useful for the setup of a transmission chain.
 
+\begin{figure}[h]
+    \centering
+    \smartdiagram[bubble diagram]{
+        ODR-mmbTools,
+        ODR-DabMux,
+        ODR-DabMod,
+        ODR-PadEnc,
+        etisnoop,
+        ODR-AudioEnc
+    }
+    \caption{The family of ODR-mmbTools}
+    \label{fig:family_mmbTools}
+\end{figure}
+
 \subsubsection{ODR-DabMux}
 ODR-DabMux implements a DAB multiplexer that combines all audio and data inputs
 into an ETI output. It can be used off-line (i.e.~not real-time) to generate ETI
@@ -130,6 +144,17 @@ parties.
 This encoder is able to generate programme associated data that can be injected
 into ODR-AudioEnc. It supports DLS, reading from a file, and MOT Slideshow,
 where the slides are read from a folder.
+
+\subsubsection{etisnoop}
+Etisnoop is not used in the broadcasting chain directly, but is an analysis tool
+for ETI, described in the ETSI standard~\cite{etsidabeti}. ODR-DabMux can write
+an ETI file that can be analysed with etisnoop. The tool can be used to verify
+the multiplex signalling, the presence of data in the subchannels, and it can
+decode audio into files.
+
+Additionally, it can output statistics in YAML format, which is useful in
+combination with an RTLSDR receiver and the \verb+dab2eti+ tool to monitor
+transmissions.
 
 
 % vim: spl=en spell tw=80 et
