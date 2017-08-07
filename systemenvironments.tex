@@ -122,14 +122,138 @@ assessment of system status, as well as the health of the services.
 
 In addition to basic system measurements like CPU, RAM and disk usage, NTP
 synchronisation, disk and network performance (and much more besides), there
-are also custom data sources for ODR-DabMux;
+are also custom data sources for ODR-DabMux.
 
 These data sources include ZMQ input buffer monitoring (buffer level, underruns
-and overruns) and the peak audio input levels (mono, or stereo). It
+and overruns) and the peak audio input levels (mono, or stereo). This
 can be installed by copying \verb+doc/stats_dabmux_multi.py+ to
 \texttt{/etc/munin/plugins.d}. They require that the ODR-DabMux management
 server is enabled in the configuration, and will automatically generate the
 graphs for the subchannels used in the configuration.
+
+
+\subsection{Monitoring using Xymon}
+The xymon monitoring tool\footnote{\url{http://xymon.sourceforge.net/}} is used
+to monitor the health of many types of systems. It can present the results in
+text, tables and/or graphs. It supports the basic health checks directly out of
+the box, and can be extended with scripts to perform non-standard health checks.
+The default mode of operation is that clients retrieve data and send it to the
+xymon server, which interprets the results, displays them and generates alerts
+if thresholds are exceeded. An alert can be send in an e-mail, an SMS or a
+tweet.
+
+The Perl script \verb+retodrs.pl+\footnote{The script name stands for
+''Retrieve Opendigitalradio Status``}, retrieves the status and
+statistics of an Opendigitalradio service and it reports the results to xymon.
+The information is retrieved from the management server within ODR-DabMux. The
+information presented includes a table with the status of each sub-channel and
+the underrun and overrun rates on the sub-channels. If needed an alert can be
+generated depending on the subchannel status or a rate exceeding a threshold.
+
+The script needs to be installed on the same server running ODR-DABmux, as the
+management service within it is only accessible from the same computer. This
+implies that the xymon client software also needs to be installed on the same
+machine. The client is configured to run the script.
+The configuration and the scripts can typically be found in subdirectory
+\verb+/usr/lib/xymon/client+, although that may depend on your distribution.
+
+Once the client is set up, it needs to connect to a xymon server, which may or
+may not be on the same machine.
+The server is configured to limit the altering to specific sub-channels, to
+store the statistical data and to generate graphs.
+The configuration and the scripts on a xymon server are usually stored in the
+subdirectory \verb+/usr/lib/xymon/server+.
+
+
+\subsubsection{Installation of the Xymon Client}
+
+The perl script has additional requirements:
+\texttt{App::cpanminus}, \texttt{ZMQ::LibZMQ3}, and \texttt{JSON::PP}. They can
+be installed through your distribution packages or using CPAN.
+
+Once the script has been copied to \verb+/usr/lib/xymon/client/ext+, the
+configuration of the launcher within the xymon client needs to be extended.
+Create a new file named \verb+odrmux.cfg+ in
+\verb+/usr/lib/xymon/client/etc/clientlaunch.d+ containing the following lines:
+
+\begin{verbatim}
+#
+# Test odrmux checks the state and the statistics
+# of the ODR-DabMux service.
+#
+[odrmux]
+	ENVFILE $XYMONCLIENTHOME/etc/xymonclient.cfg
+	CMD $XYMONCLIENTHOME/ext/retodrs.pl
+	LOGFILE $XYMONCLIENTLOGS/retodrs.plog
+	INTERVAL 5m
+\end{verbatim}
+
+After a restart of the xymon client, the script \verb+retodrs.pl+ will
+be invoked once every 5 minutes.
+
+
+\subsubsection{Server Configuration}
+
+By default all subchannels will be monitored, and will raise alerts if the
+status or the statistics are in outside of a valid operational range. The
+alerting can be limited to a subset of the sub-channels by adding a tag to the
+hosts-entry in the configuration file \verb+/usr/lib/xymon/server/etc/hosts.cfg+.
+The additional tag is:
+
+\begin{verbatim}
+	ODR:select(<SubChannelName0>;<SubChannelName1>;...)
+\end{verbatim}
+
+The sub-channels not named will still be shown, but no alerts will be generated
+for those sub-channels. This is visible as the green/yellow/red icons are
+missing for those sub-channels.
+
+Six statistic values are gathered by the script, namely
+\texttt{BufferMin}, \texttt{BufferMax}, \texttt{PeakLeft}, \texttt{PeakRight},
+\texttt{UnderRun} and \texttt{OverRun}. It is found that only the latter two
+seem to contain sensible values all the time, so those values are the only
+ones shown in a graph. Note that those values retrieved by the script are
+ever-increasing counters, showing the total number of over-runs or under-runs.
+In the graph, the average number of over-runs or under-runs per second, averaged
+over a period of 5 minutes, is shown.
+
+The first step is to have the collected statistics to be moved into a database,
+a so-called \textit{Round Robin Database}. This is accomplished by adding a file
+named \verb+odr.cfg+ in \verb+/usr/lib/xymon/server/etc/xymonserver.d+
+containing the following lines:
+
+\begin{verbatim}
+TEST2RRD+=",odr_mux=devmon"
+GRAPHS+=",odr_mux::1"
+\end{verbatim}
+
+The next step is to define the layout of the graph.
+Create a file named \verb+graphs.odr.cfg+ in
+\verb+/usr/lib/xymon/server/etc/graphs.d+ containing the following lines:
+
+\begin{verbatim}
+#
+# Graphs to show the statistics collected from an
+# Opendigitalradio DabMux server.
+#
+[odr_mux]
+	FNPATTERN ^odr_mux\.(.+)\.rrd$
+	TITLE , Frame loss rate
+	YAXIS Rate [/s]
+	-l 0
+	DEF:ur@RRDIDX@=@RRDFN@:Underrun:AVERAGE
+	DEF:or@RRDIDX@=@RRDFN@:Overrun:AVERAGE
+	LINE1:ur@RRDIDX@#FF0000:@RRDPARAM@ underrun
+	GPRINT:ur@RRDIDX@:MIN:Min \: %5.1lf %s
+	GPRINT:ur@RRDIDX@:MAX:Max \: %5.1lf %s
+	GPRINT:ur@RRDIDX@:AVERAGE:Avg \: %5.1lf %s
+	GPRINT:ur@RRDIDX@:LAST:Cur \: %5.1lf %s\n
+	LINE1:or@RRDIDX@#00FF00:@RRDPARAM@ overrun
+	GPRINT:or@RRDIDX@:MIN: Min \: %5.1lf %s
+	GPRINT:or@RRDIDX@:MAX:Max \: %5.1lf %s
+	GPRINT:or@RRDIDX@:AVERAGE:Avg \: %5.1lf %s
+	GPRINT:or@RRDIDX@:LAST:Cur \: %5.1lf %s\n
+\end{verbatim}
 
 
 \subsection{Real-time Scheduling}
