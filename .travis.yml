@@ -10,14 +10,15 @@ notifications:
     on_start: never
 addons: &addons
   apt:
-    - texlive-latex-recommended
-    - texlive-latex-extra
-    - texlive-fonts-recommended
-    - texlive-fonts-extra
-    - texlive-science
-    - texlive-pictures
-    - dvipng
-    - cm-super
+    packages: &packages
+      - texlive-latex-recommended
+      - texlive-latex-extra
+      - texlive-fonts-recommended
+      - texlive-fonts-extra
+      - texlive-science
+      - texlive-pictures
+      - dvipng
+      - cm-super
 script:
 - |
   make
