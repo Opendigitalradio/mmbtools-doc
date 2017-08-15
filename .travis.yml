@@ -17,6 +17,7 @@ addons: &addons
       - texlive-fonts-extra
       - texlive-science
       - texlive-pictures
+      - latex-xcolor
       - dvipng
       - cm-super
 script:
