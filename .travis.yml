@@ -18,6 +18,7 @@ addons: &addons
       - texlive-science
       - texlive-pictures
       - latex-xcolor
+      - pgf
       - dvipng
       - cm-super
 script:
