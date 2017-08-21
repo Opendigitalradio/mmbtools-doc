@@ -1,13 +1,13 @@
 % LICENSE: see LICENCE
-\section{Introduction}
+\section{Introductions}
 This is the official documentation for the \mmbtools. These tools can be used to
-experiment with DAB modulation, learn the techniques behind it and setup a DAB
-or \dabplus transmitter.
+experiment with digital audio broadcasting (DAB) modulation, to learn the
+techniques behind it, and to set up a DAB or \dabplus transmitter.
 
-This documentation assumes that you are already familiar with base concepts of
-the DAB system. To get started with the \mmbtools, understanding how the DAB
-transmission chain is structured is a prerequisite. The ``DAB Bible'' by Hoeg
-and Lauterbach~\cite{hoeg} and the ``Guide to DAB standards'' from the
+This documentation assumes that you are already familiar with the basic concepts
+of the DAB system. Understanding how the DAB transmission chain is structured is
+a prerequisite for getting started with the \mmbtools. The ``DAB Bible'' by Hoeg
+and Lauterbach~\cite{hoeg}, and the ``Guide to DAB standards'' from the
 ETSI~\cite{etsidabguide} can be used as a starting point.
 
 In this document, the terms ``DAB'' and ``\dabplus'' are used somewhat
@@ -17,17 +17,22 @@ when talking about specific details about the newer version of the standard.
 
 
 \section{Purpose}
-The different programs that are part of the \mmbtools each have their own
-documentation regarding command-line options and configuration settings, and the
-opendigitalradio.org wiki\footnoteurl{http://opendigitalradio.org}
-contains many explanations and pointers, but there is
-no single source of documentation available for the whole tool-set.
+The individual programs that make up the \mmbtools each have their own
+documentation for command-line options and configuration settings, and the
+opendigitalradio.org wiki\footnoteurl{http://opendigitalradio.org} contains many
+explanations and pointers, but there is no single source of documentation
+available for the whole toolset.
 
-This document aims to solve this, by first outlining general concepts,
-presenting different usage scenarios and detailing a complete transmission
-setup.
-With this document in hand, you should be able to understand all elements
-composing a \mmbtools transmission chain, and how to set one up.
+This document aims to fill this gap, by first outlining general concepts, then
+presenting different usage scenarios, and finally, detailing a complete
+transmission setup.
+With this document in hand, you should be able to understand all of the elements
+which go into the \mmbtools transmission chain, and how to set one up.
+
+Please refer to the bibliography for references on any individual topic that may need
+clarification, to the README files in the repositories of the tools that are
+going to be presented in this guide, and if you have further questions, get in
+touch with us through the mailing-list mentioned on our website.
 
 \section{Presentation of the Tools}
 \subsection{Origins}
@@ -38,20 +43,23 @@ started developing a DAB multiplexer. This effort evolved through the years, and
 was published in September 2009 as \mbox{CRC-DabMux} under the GPL
 open-source licence.
 
-CRC also developed a DAB modulator, called \mbox{CRC-DABMOD}, which could create
-baseband I/Q samples from an ETI file. This I/Q data could then be set to
-a hardware device using another tool. For the Ettus USRPs, a ``wave player''
-script was necessary to interface to GNURadio. Only DAB Transmission Mode 2 was
-supported. \mbox{CRC-DABMOD} was also released under the GPL in early 2010.
+CRC also developed a DAB modulator, called \mbox{CRC-DABMOD}, which was able to create
+baseband complex quadrature (I/Q) samples from files or
+streams in the ETI format. This I/Q data could then be sent to a hardware device
+(for broadcast or laboratory RF measurements) using another tool. For driving
+the universal software-defined radio peripherals (USRP) made by the company
+Ettus Research, a ``wave player'' script was necessary to interface with GNURadio.
+Only DAB Transmission Mode 2 was supported. \mbox{CRC-DABMOD} was also released
+under the GPL in early 2010.
 
 As encoders, toolame could be used for DAB, and CRC developed a closed-source
 \mbox{CRC-DABPLUS} \dabplus encoder.
 
-These three CRC-~tools, and some additional services available on the now
+These three CRC-tools, and some additional services available on the now
 unreachable website\footnote{There are some snapshots of the website available
-    on \url{http://archive.org}.} \url{http://mmbtools.crc.ca} were
-part of the \mbox{CRC-mmbTools}. These tools made it possible to set up the
-first DAB transmission experiments.
+    on \url{http://archive.org}.}
+\url{http://mmbtools.crc.ca} were part of the \mbox{CRC-mmbTools}. These tools
+made it possible to set up the first DAB transmission experiments.
 
 In 2012, these tools received experimental support for single-frequency
 networks, a functionality that has been developed by Matthias P. Brändli during
@@ -61,27 +69,27 @@ Because SFNs are mainly used in TM 1, CRC subsequently released a patch to
 \mbox{CRC-DABMOD} that enabled all four transmission modes.
 
 At that point, involvement from CRC started to decline. The SFN patch was
-finally never included in the \mbox{CRC-mmbTools}, and as time passed by, the
+ultimately never included in the \mbox{CRC-mmbTools}, and as time passed, the
 de-facto fork on \url{http://mpb.li} was receiving more and more features.
 Having two different programs with the same name made things complicated, and
-the tools were officially forked with the approval of CRC in February 2014, and
-given the new name \mbox{ODR-mmbTools}. They are now developed by the
+so, with the approval of CRC, the tools were officially forked in February 2014,
+and given the new name \mbox{ODR-mmbTools}. They are now developed by the
 Opendigitalradio association.
 
 In April 2014, the official \mbox{CRC-mmbTools} website went offline, and it has
-become very difficult, if not impossible to acquire licences for the
+become very difficult, if not impossible, to acquire licences for the
 \mbox{CRC-DABPLUS} encoder. Luckily there is an open-source replacement
-available, which was part of Google's Android sources. This encoder has been
+available, which was part of Google's Android source. This encoder has been
 extended with the necessary \dabplus{}-specific requirements (960-transform,
 error correction, framing, etc.), and now exists under the name
-\mbox{fdk-aac}. The encoder \mbox{ODR-AudioEnc} can use this library to encoder
+\mbox{fdk-aac}. The encoder \mbox{ODR-AudioEnc} can use this library to encode for
 \dabplus{}.
 
 \subsection{Included Tools}
 The \mmbtools are composed of several software projects:
 \mbox{ODR-DabMux}, \mbox{ODR-DabMod},
 \mbox{ODR-AudioEnc}, \mbox{ODR-PadEnc}, and other scripts, bits and pieces
-that are useful for the setup of a transmission chain.
+that are useful when setting up a transmission chain.
 
 \begin{figure}[h]
     \centering
@@ -99,50 +107,54 @@ that are useful for the setup of a transmission chain.
 
 \subsubsection{ODR-DabMux}
 ODR-DabMux implements a DAB multiplexer that combines all audio and data inputs
-into an ETI output. It can be used off-line (i.e.~not real-time) to generate ETI
-data for later processing, or in a real-time streaming scenario (e.g.~in a
-transmitter).
+and outputs them in the form of a file in ETI format. This can be used offline
+(i.e.~not in real time) to generate ETI data for processing later, or for use in
+a real-time streaming scenario (e.g.~in a transmitter).
 
-It can read input audio or data from files (``.mp2'' for DAB, ``.dabp'' for
-\dabplus), FIFOs (also called ``named pipes'') or a network connection. The
+ODR-DabMux can read input audio or data from files (``.mp2'' for DAB, ``.dabp'' for
+\dabplus), FIFOs (also called ``named pipes''), or from a network connection. This
 network connection can use UDP or ZeroMQ. The CURVE authentication mechanism
-from ZeroMQ can also be used to authenticate the encoder, in order to avoid that
-a third-party can disrupt or hijack a programme.
+from ZeroMQ can also be used to authenticate the encoder, in order to prevent
+third parties from disrupting or hijacking programmes.
 
-The ensemble configuration can be specified on the command line using the
-options described in the manpage, or using a configuration file. The command
-line options are kept to be compatible with CRC-DABMUX, but using the
-configuration file is preferred, because it supports more options.
+The configuration of the multiplexer is given in a configuration file, whose
+format is defined in the example files in the \verb+doc/+ folder inside the
+ODR-DabMux repository.
 
 
 \subsubsection{ODR-DabMod}
-ODR-DabMod is a software-defined DAB modulator that receives or reads ETI, and
-generates modulated I/Q data usable for transmission.
+ODR-DabMod is a software-defined DAB modulator that receives or reads ETI data
+in streams or from files, and generates modulated I/Q data which can be used for
+transmission.
 
 This I/Q data which is encoded as complex floats (32bits per complex sample) can
-be written to a file or pipe, or sent to a USRP device using the integrated UHD
-output. Other SDR platforms can be used if they are able to accept the I/Q data.
-The output of the modulator can also be used in GNURadio if format conversion or
-graphical analysis (spectrum) is to be done.
+be written to a file or pipe, sent to a USRP device using the integrated
+output for the open-source USRP Hardware Driver (UHD) or to other
+software-defined radio (SDR) devices using the
+SoapySDR\footnoteurl{https://github.com/pothosware/SoapySDR/wiki} library.
+
+The output of the modulator can also be sent to a GNURadio flow-graph for
+further processing, conversion or analysis using a ZeroMQ interface.
 
 \subsubsection{ODR-AudioEnc}
 The ODR-AudioEnc encoder can be used to encode for DAB and \dabplus. It includes
-a toolame-based MPEG encoder, and uses the \mbox{fdk-aac} library as an external
+a TooLAME-based MPEG encoder, and uses the \mbox{fdk-aac} library as an external
 dependency to encode \dabplus{}.
 
-The integrated TooLAME library is a MPEG-1 Layer II audio encoder that is used
-to encode audio for the DAB standard. The original project has been unmaintained
-since 2003, but the twolame fork that pursues the development removed the DAB
-framing. Because of this, twolame is not suitable for DAB.
+The integrated TooLAME library is an MPEG-1 Layer II audio encoder that is used
+to encode audio for the DAB standard.
+Another encoder called twolame is not compatible with DAB even though it is more
+recent than TooLAME, and cannot be used for our application.
 
-The necessary framing and error-correction that \dabplus{} mandates, the PAD
-insertion, the ZeroMQ output and the ALSA input were then added by different
-parties.
+The framing and error correction which are needed for \dabplus{}, as well as the
+programme-associated data (PAD) insertion, the output to the ZeroMQ interface,
+and the input from Advanced Linux Sound Architecture (ALSA) were then added by
+different parties.
 
 \subsubsection{ODR-PadEnc}
-This encoder is able to generate programme associated data that can be injected
-into ODR-AudioEnc. It supports DLS, reading from a file, and MOT Slideshow,
-where the slides are read from a folder.
+This encoder is able to generate programme-associated data (PAD) that can be
+injected into ODR-AudioEnc. It supports reading and encoding Dynamic Label
+Segment (DLS) from a text file, and reads images from a folder for MOT Slideshow.
 
 \subsubsection{etisnoop}
 Etisnoop is not used in the broadcasting chain directly, but is an analysis tool
@@ -154,6 +166,5 @@ decode audio into files.
 Additionally, it can output statistics in YAML format, which is useful in
 combination with an RTLSDR receiver and the \verb+dab2eti+ tool to monitor
 transmissions.
-
 
 % vim: spl=en spell tw=80 et
