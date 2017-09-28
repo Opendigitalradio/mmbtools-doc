@@ -19,5 +19,5 @@ http://opendigitalradio.github.io/mmbtools-doc/mmbtools.pdf
 
 Acknowledgements
 ----------------
- * Rash for proof-reading
+ * Rash and Adam for proof-reading and corrections
  * Wim Nelis for the section about Monitoring using Xymon
