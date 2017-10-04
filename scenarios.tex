@@ -146,6 +146,7 @@ it in steps of $3$dB or smaller while measuring the output signal, until the
 correct power is reached.
 
 \subsubsection{Other Hardware}
+\label{otherhardware}
 ODR-DabMod supports other radio interfaces using SoapySDR or through standard output, or via
 a fifo -- the latter must be created prior to runtime with the \texttt{mkfifo} command.
 Due to limitations in the UHD driver library, \texttt{/dev/stdout} will only
@@ -165,7 +166,7 @@ chosen inside the valid range for the device being used. This range can be shown
 by calling \texttt{SoapySDRUtil --probe}.
 
 ODR-DabMod has been tested working with HackRF on i386 and
-x86 architectures.\footnote{HackRF has not been tested to any degree of success
+x86\_64 architectures.\footnote{HackRF has not been tested to any degree of success
 with ARM-based computers at this time as they are not (yet) capable of resampling
 to the required higher rates as the process is highly CPU intensive.}
 

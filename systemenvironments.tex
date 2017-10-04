@@ -8,6 +8,50 @@ automatic recovery (in case of errors) and resilience are crucial in 24/7
 operations. The term \emph{production environment} will be used here to refer to
 such use.
 
+\subsection{Processing requirements}
+
+The tools have differing requirements regarding CPU performance and amount of
+memory, and while the performance of most desktop PCs is sufficient to run the
+tools, it is important to take the requirements in consideration when setting up
+a system.
+Memory requirements are easily met with 1GB of RAM, so we'll look at CPU more in
+depth.
+
+The most resource-consuming part is the modulator ODR-DabMod. The
+following impact its CPU usage: number of sub-channels; enabling of the
+resampler; enabling crest factor reduction; enabling the predistorter.
+Compilation options to optimise ODR-DabMod for your system are described in the
+README. While you should have no trouble running it even on an older desktop PC,
+the computing power of embedded ARM boards (like the Raspberry Pi) could be
+insufficient, especially if the resampler is needed.\footnote{See section
+\ref{otherhardware} for an example.}
+When using a USB SDR device, the USB controller can have a large impact on the
+robustness of the transmission, even if CPU usage is low. Such issues are visible as
+underruns during operation: with a good controller, less than one underrun per
+day is easily achievable on a machine dedicated to only this task. When using
+a graphical interface at the same time, interaction with the user interface can
+also trigger underruns. For a production system, it is better if no graphical
+user interface is running.
+In any case, it is required to evaluate a given system over several days if
+reliable operation is to be proven.
+
+The multiplexer ODR-DabMux mostly rearranges data internally, and doesn't do
+much processing. Its resource requirements are low and it runs well on small
+systems. The same goes for ODR-PadEnc, ODR-zmq2edi and ODR-zmq2farsync.
+
+Audio encoding using ODR-AudioEnc is in-between ODR-DabMux and ODR-DabMod in
+terms of resource usage, and running one encoder is not a problem even on small
+embedded ARM boards.
+However, you might want to run a dozen encoders on a single machine, where you
+will have to plan for more headroom.
+
+In general, for a robust 24/7 system, you should strive for a CPU usage below
+50\%, regardless of which tools you are using. This gives you headroom for
+monitoring, remote administration and background jobs run by cron.
+Once your system is in operation, monitoring performance and observing logs is
+essential to assess the health of your transmission.
+
+
 \subsection{Launching the tools}
 
 Services running in a production environment are usually administered remotely,
@@ -150,7 +194,7 @@ information presented includes a table with the status of each sub-channel and
 the underrun and overrun rates on the sub-channels. If needed an alert can be
 generated depending on the subchannel status or a rate exceeding a threshold.
 
-The script needs to be installed on the same server running ODR-DABmux, as the
+The script needs to be installed on the same server running ODR-DabMux, as the
 management service within it is only accessible from the same computer. This
 implies that the xymon client software also needs to be installed on the same
 machine. The client is configured to run the script.
