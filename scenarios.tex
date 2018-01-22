@@ -222,7 +222,7 @@ it helps to produce a cleaner spectral output. At higher rates one needs to
 ensure that samples are not being dropped on the USB and that CPU resources are
 not being contended.
 
-The shoulder performance has been measured with shoulder performance at a little
+The shoulder performance has been measured with a value at a little
 better than $35$dB, which is roughly equivalent to that obtained from first
 generation commercial modulator equipment. This can be increased to a relatively
 respectable $\approx 40$dB by enabling the FIR baseband filter in ODR-DabMod.
@@ -264,6 +264,24 @@ the points; the second is visible because it pulls the constellation points back
 into a circle of radius proportional to the error clipping value.
 
 Settings and some statistics are available through the remote control.
+
+\subsubsection{OFDM Symbol Windowing}
+One technique to improve the shoulder performance is to avoid generating abrupt
+transitions between the OFDM symbols, but apply cross-fading from one symbol to
+the next using a windowing function.\footnote{As of ODR-DabMod v1.0.1, this feature is
+still in the \texttt{next} development branch, and not part of a released
+version.}
+
+This feature can be enabled by setting the number of samples to use for
+overlapping one symbol with the next one, the default value is $10$ (out of a
+total symbol length of $2552$ samples in Transmission Mode I). Refer to the
+parameter \verb+ofdmwindowing+ in the file \verb+doc/example.ini+ for
+instructions.
+
+As this windowing feature modifies samples that are in the guard interval, the
+trade-off is reduced resilience against delayed reflections, reduced maximum
+transmitter delay difference in an SFN scenario, and potentially diminished
+robustness against Doppler spread.
 
 \subsubsection{Digital Pre-Distortion}
 An ongoing activity is the development of a method to characterise a power
