@@ -62,11 +62,10 @@ source=myfirst.eti
 loop=1
 
 [modulator]
-gainmode=2
 digital_gain=0.8
 
 [firfilter]
-enabled=0
+enabled=1
 
 [output]
 output=uhd
@@ -85,20 +84,18 @@ This example also shows more options that the example for the file output:
         used to set parameters while the modulator is running.
     \item \texttt{loop=1} rewinds the input file when the end is reached. The
         same ETI file will be transmitted over and over.
-    \item \texttt{gainmode=2} sets the GainMode to VAR, which reduces
-        overshoots in the output.
     \item \texttt{digital\_gain=0.8} reduces the output sample deviation, to
         reduce compression in the USRP.
-    \item \texttt{firfilter enabled=0} can be set to 1 to enable an additional
-        FIR filter to improve the spectrum mask. This filter needs a file
-        containing the filter taps, which can be generated using
-        \texttt{ODR-DabMod/doc/fir-filter/generate-filter.py}. An example taps
-        file is also available in this folder.
+    \item \texttt{firfilter enabled=1} enables the FIR filter to improve
+        the spectrum mask. If you want to customise the filter used, you can
+        create your own filter taps file using
+        \texttt{ODR-DabMod/doc/fir-filter/generate-filter.py}.
     \item \texttt{master\_clock\_rate=32768000} sets the USRP internal clock to
         a multiple of $2048000$, which is required if we want to use the native
         DAB sample rate.
     \item \texttt{txgain=40} Sets the analog transmit gain of the USRP to 40dB,
-        which is specific to the B200.
+        which is specific to the B200. If you go above 70dB you will start to
+        see nonlinearities.
 \end{itemize}
 
 Some of these options are not necessary for the system to work, but they
@@ -165,11 +162,6 @@ configuration is in \texttt{doc/example.mux}. The TX Gain setting should be
 chosen inside the valid range for the device being used. This range can be shown
 by calling \texttt{SoapySDRUtil --probe}.
 
-ODR-DabMod has been tested working with HackRF on i386 and
-x86\_64 architectures.\footnote{HackRF has not been tested to any degree of success
-with ARM-based computers at this time as they are not (yet) capable of resampling
-to the required higher rates as the process is highly CPU intensive.}
-
 The unit is an entry level yet versatile SDR which provides coverage between
 $\approx10$MHz to $6$GHz, and DAB signals been successfully generated with it in
 VHF Band III ($174$--$240$MHz), L-Band ($1462$--$1467.5$MHz) and even the worldwide ISM
@@ -189,9 +181,9 @@ HackRF has selectable baseband filters, however the lowest filter setting
 $2048$k samples per second. An appropriate rate to start with is $4096$k, and for
 some purposes this may well be adequate as this moves the image signals
 generated within the radio far enough into the stop-band of filter to attenuate
-them significantly. The digital gain in the ODR-DabMod configuration file should
-be set to a maximum of $2.4$ at this rate to avoid digital clipping on modulation
-peaks.
+them significantly. Since ODR-DabMod v1.0.1, the digital gain setting is not
+be influenced by the sample rate anymore, and should be set below 1, with some
+margin, to avoid digital clipping on modulation peaks.
 
 Example of the settings in the \texttt{mod.ini} file suitable for use with HackRF:
 
@@ -206,8 +198,7 @@ source=myfirst.eti
 loop=1
 
 [modulator]
-gainmode=2
-digital_gain=2.4
+digital_gain=0.8
 rate=4096000
 
 [firfilter]
@@ -229,31 +220,14 @@ Depending on the capabilities of the host computer, using higher sampling rates
 ($6144$k, and even $8192$k) may be possible. This oversampling is desirable as
 it helps to produce a cleaner spectral output. At higher rates one needs to
 ensure that samples are not being dropped on the USB and that CPU resources are
-not being contended. It is also important to note that the digital gain value
-must also be scaled accordingly as the sampling rate is increased. Two sets of
-values are provided which reflect the theoretical values, and the second set
-given in parentheses are empirical maximum values determined while monitoring
-shoulder performance (measured at $970$kHz offset from the centre frequency)
-using a spectrum analyser in $\approx 3$ kHz resolution bandwidth. The digital
-gain figures for the tested sampling rates are shown below:
-
-\begin{center}
-\begin{tabular}{| l | c | c |}
-    \hline
-    Rate       & Dgain & Max Dgain (Empirical) \\ \hline \hline
-    $4096$ksps & $2.0$ & $2.25$ \\ \hline
-    $6144$ksps & $3.0$ & $3.37$ \\ \hline
-    $8192$ksps & $4.0$ & $4.50$ \\
-    \hline
-\end{tabular}
-\end{center}
+not being contended.
 
 The shoulder performance has been measured with shoulder performance at a little
 better than $35$dB, which is roughly equivalent to that obtained from first
 generation commercial modulator equipment. This can be increased to a relatively
-respectable $\approx 40$dB by enabling the FIR baseband filter in ODR-DabMod,
-and supplying it with an appropriate coefficient (tap) file. The maximum output
-power available to meet these performance figures is approximately $-10$dBm RMS.
+respectable $\approx 40$dB by enabling the FIR baseband filter in ODR-DabMod.
+The maximum output power available to meet these performance figures is
+approximately $-10$dBm RMS.
 
 Example of using ODR-DabMod with the \texttt{hackrf\_transfer} utility:
 
