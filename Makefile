@@ -4,6 +4,7 @@ includes = introduction.tex \
 		   scenarios.tex \
 		   appendix.tex \
 		   systemenvironments.tex \
+		   production.tex \
 		   datafeatures.tex \
 		   sfn.tex
 

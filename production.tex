@@ -1,0 +1,148 @@
+% LICENSE: see LICENCE
+\section{A Production Broadcast Setup}
+\subsection{Outline}
+We have now seen all necessary elements for a complete broadcast chain, and we
+will now consider what is necessary to use these elements in a 24/7 production
+environment. At this point, many previously considered topics come together to
+form a reliable system.
+
+First, let us outline what our desired setup shall include:
+
+\begin{itemize}
+    \item We want to transmit about a dozen programmes using a single
+        transmission site, i.e.~no SFN;
+    \item Some audio sources are web-streams, some are using remote ODR-AudioEnc
+        encoders;
+    \item One machine is used for audio encoding web-streams, multiplexing and
+        modulation;
+    \item ODR-AudioEnc instances will connect over ZeroMQ to ODR-DabMux,
+        ODR-DabMod will use a TCP connection ODR-DabMux;
+    \item All audio encoders will insert PAD with DLS, and optionally slideshow;
+    \item We are transmitting using a USRP B200, driving a power amplifier;
+    \item We enable both telnet and zmq remote control interfaces for management
+        purposes;
+    \item The power amplifier will be driven linearly, no digital-predistortion
+        is used;
+    \item We must respect the spectrum mask given by the broadcast license;
+    \item The setup must be resilient to program failure and restart them
+        automatically, also informing the operator;
+    \item We use munin to monitor the operation of the system.
+\end{itemize}
+
+This skips over planning considerations like choice of site location, antenna
+diagrams, appropriate transmit power or regulation aspects, as we assume these
+topics are were already taken care of.
+With the outline set, we will now go through a list of steps that will lead to a
+functional and reliable broadcast setup.
+
+
+\subsection{Setup steps}
+\paragraph{Choice of computer}
+First, a suitable computer has to be chosen for running the tools. As this needs
+to be as reliable as possible, it is preferable to chose a server designed for
+reliability. Because we are driving a USRP over USB, it is essential to have a
+good USB controller on the motherboard. Sadly, there is no easy way to verify
+this besides actually testing it. See section~\ref{usrp_b200} for more details.
+Redundant power supplies and the ability to use two hard drives in a RAID are
+also useful to have.
+
+\paragraph{Operating System}
+The operating system needs to be installed next. All the dependencies for the
+tools need to be installed, as well as the additional tools needed for the
+system: supervisord for process supervision, Munin for monitoring, logging and
+logrotate configuration, proper NTP setup, configuring real-time scheduling and
+additional topics discussed in section~\ref{systemenvironment}.
+If you need to prepare remote encoders, this has to be done for all the machines
+you will use.
+
+\paragraph{Installation of the Tools}
+The tools themselves need to be installed, according to instructions in the
+\texttt{README} and \texttt{INSTALL} files of the repositories. Then you need to
+prepare the configuration for the tools, using the examples and this guide.
+For every programme, create a folder for the slideshow images and gather the
+slides, and prepare the interfaces for DLS text.
+Write the supervisord configuration files that are used to launch all
+ODR-AudioEnc and ODR-PadEnc processes. Write the multiplex configuration, with
+all the entries for your programmes and an appropriate supervisor configuration.
+Setup ODR-DabMux munin monitoring as desired.
+
+\paragraph{Verification of Multiplexer}
+At this point you should already be able to launch the configured tools and
+verify that they start, connect properly and stay running.
+You can simulate process failures by killing any of the tools; the supervisor
+should restart it.
+You could use etisnoop and other ETI analysis tools to verify that your
+multiplex is valid, or listen in on the programmes by using netcat piped into
+dablin.\footnote{\texttt{nc MUX 9200 | dablin\_gtk} should work, assuming
+your ODR-DabMux serves ETI over TCP on port $9200$. Replace \texttt{MUX} by the
+multiplexer IP address.
+See \url{http://github.com/Opendigitalradio/dablin} for information about
+dablin.}
+Also check that logging and munin monitoring works.
+
+\paragraph{ODR-DabMod Configuration}
+Next configure ODR-DabMod. For improved spectrum performance, configure it with
+FIR filter enabled, OFDM symbol windowing enabled (if available), with the
+frequency given in your license, and start with a digital gain of $0.5$ and a TX
+gain of $60$dB. If you have a disciplined 10MHz clock reference or a GPSDO,
+configure accordingly. This will ensure the modulator runs at the same rate as
+the rest of the transmission chain whose rate is in turn related to NTP.
+
+\paragraph{Generate Exciter Signal}
+Prepare the ODR-DabMod supervisor configuration. Connect the USRP to a spectrum
+analyser and launch the modulator. Before connecting the power amplifier, make
+sure to have a good spectrum at the USRP TX port, and use the remote control
+interface to modify TX gain and digital gain to see what RF power you can
+generate given the spectrum mask you want to achieve. Placing a DAB receiver
+next to your setup, you should also be able to verify that reception is
+possible, audio is present and that the DLS and slides are properly transmitted.
+Ideally, let this setup run for a couple of days and check for the absence of
+underruns. This step proves you can generate a valid exciter signal with good
+characteristics.
+
+\paragraph{Connect Power Amplifier}
+After stopping the transmission, connect the USRP to a Band III
+filter\footnote{For example, a filter with similar characteristics as the
+Mini-Circuits RBP-220W+.} to suppress harmonics, connect to the power amplifier.
+Using suitable attenuation, connect the amplifier output to your spectrum
+analyser.
+Configure a low TX gain of $30$dB and a digital gain of $0.5$, and power up.
+Again do some experimentation with both TX gain and digital gain to find the
+optimal settings, now with the amplifier. Let the amplifier warm up to
+operational temperature before reaching conclusions. If your amplifier has a
+monitoring interface, make sure it works and integrate it into your setup.
+
+\paragraph{Tune RF Settings}
+Also experiment with settings that have an impact on the spectrum performance:
+OFDM Symbol Windowing and the FIR Filter settings.
+If you have measurement equipment that can demodulate and measure MER, make sure
+it is within bounds, ideally better than $25$dB.\sidenote{Justify this value.}
+You can trade-off MER against peak-to-average power ratio using the
+\verb+normalise_variance+ and CFR settings.
+
+\paragraph{Insert Mask Filter}
+The final measurements before installation needs to be done with the mask
+filter connected after the power amplifier, to ensure that the spectrum mask is
+satisfied. The mask filter also needs some warm up time.
+It is also advisable to use a vector-network analyser to check the
+mask filter's S11 and S12 parameters.
+
+\paragraph{Final Setup}
+Finally, set up the system at your transmission site, power up to nominal power,
+do coverage measurements and compare them to the simulations.
+By now, you will also have to deploy all the remote encoders at the programme
+originators' studios.
+
+\paragraph{Maintenance and Monitoring}
+Running a multiplex is unlikely to be a ``set up and ignore'' project. Usually
+you will have to do many kinds of interventions, because of changes in your
+multiplex composition, requests from programmes you are carrying (e.g.~change of
+web-stream URL, replacement of slides), or notify them in case of audio issues;
+equipment failure due to weather conditions requiring replacement; regular
+system updates that should made with low impact; changes of configuration
+related to announcements or service linking; modification of RF settings due to
+aging of RF components or due to seasonal thermal changes. All these are
+inherent to operating a broadcast infrastructure and create maintenance work
+that needs to be planned for.
+
+% vim: spl=en spell tw=80 et
