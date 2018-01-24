@@ -58,32 +58,21 @@ Services running in a production environment are usually administered remotely,
 and must be able to run without user intervention, or connection. Traditionally,
 such services are implemented (in UNIX terminology) as `daemons'. These are
 started and stopped using the init system contained within the distribution.
-The ODR-mmbTools cannot daemonise themselves, so this requires another approach:
-
-\paragraph{Screen multiplexer}
-A simple approach is to use a screen multiplexer such as \emph{GNU Screen} or
-\emph{tmux} - either of these can be used to launch a session from which the
-user can detach, and later re-attach at will - leaving the tools running within
-it. Please see the relevant manpages for more information.
-
-Although a screen multiplexer alone permits the tools to run without a user
-being connected, it alone cannot automatically restart failed processes, and it
-is unable to provide warnings in the case of a problem.
-
-The dab-scripts, already mentioned in \ref{usingexistingwebstreams}, can be
-employed to monitor the processes and (if necessary) restart them, and send an
-alert via email.
+As the ODR-mmbTools cannot daemonise themselves, a process supervisor is used.
 
 \paragraph{supervisord}
-As an alternative to using the scripts, the execution of the tools can also be
-carried out by a dedicated tool. \texttt{supervisor}\footnote{\url{http://supervisord.org}}
-is (as the name implies) such a tool.
+One possibility is to use
+\texttt{supervisord}\footnote{\url{http://supervisord.org}}
+which can launch the tools and monitor their proper execution. It will
+restart the processes and optionally inform the operator by email.
 
-Once installed, supervisor reads its configuration file in \texttt{/etc/supervisor.conf}
+Once installed, supervisord reads its configuration file in
+\texttt{/etc/supervisor.conf}
 and launches the processes that are to be monitored. Each process is described
 by a file. The following example assumes the tools are run as user \texttt{odr},
 and that the multiplex configuration is in \texttt{/home/odr/config.mux}, and
-that ODR-DabMux is to be launched.The logs of ODR-DabMux is written to the
+that ODR-DabMux is to be launched.
+The standard output and standard error streams of ODR-DabMux are written to the
 specified log files.
 
 \begin{lstlisting}
@@ -97,13 +86,13 @@ stdout_logfile=/home/odr/logs/mux.out.log
 stderr_logfile=/home/odr/logs/mux.err.log
 \end{lstlisting}
 
-Once this configuration has been added to the supervisor configuration, the
+Once this configuration has been added to the supervisord configuration, the
 settings have to be re-read using:
 \begin{lstlisting}
 supervisorctl reread
 \end{lstlisting}
 
-In order for supervisor to start managing and running this process, it needs to
+In order for supervisord to start managing and running this process, it needs to
 be added:
 
 \begin{lstlisting}
@@ -115,9 +104,16 @@ achieved by customising the configuration template above. Examples are provided
 in the \texttt{mmbtools-aux} repository, under the \texttt{supervisor} folder -
 these need to be changed to reflect the paths that are in use on your system.
 
-supervisor also includes a small web-server that can display the state of the
+supervisord also includes a small web-server that can display the state of the
 managed processes. It is enabled with the \verb+[inet_http_server]+ setting in
 the configuration file.
+
+\paragraph{systemd}
+Most recent GNU/Linux distributions use \texttt{systemd} as init system, which
+also can handle the supervision of processes. To achieve this, systemd unit
+files have to be written for the tools. For more information, see the systemd
+documentation.\sidenote{Give an example unit file}
+
 
 \subsection{Logging}
 Collecting information about events is essential within a production environment.
