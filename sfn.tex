@@ -123,7 +123,7 @@ t_{transmission} = t_{TIST} + \delta
 If this offset is set to a higher value, there will be a bigger delay (measured
 in absolute time) between the point in time a frame is multiplexed and the point
 in time the frame is transmitted. More frames therefore will be buffered in
-the ODR-DabMod ZeroMQ input, increasing robustness against network latency
+the ODR-DabMod input, increasing robustness against network latency
 fluctuations.
 
 The offset already has two functions: it compensates for network delay and
@@ -137,10 +137,11 @@ therefore rewrite the above equation as:
     t_{transmission} = t_{TIST} + \delta_{network} + \delta_{planning}
 \]
 \[
-    \delta = \delta_{network} + \delta_{planning}
+    \delta_{offset} = \delta_{network} + \delta_{planning}
 \]
 
-\sidenote{Explain relationship with ZeroMQ max buffer size}
+When using the ZeroMQ input, the \verb+max_frames_queued+ setting must be
+large enough to contain enough ETI frames to accommodate the offset.
 
 \subsection{Using ODR LEA-M8F GPSDO board}
 
@@ -166,8 +167,9 @@ that the GPSDO is locked properly, and different configuration settings for the
 clock management PLL inside the USRP, making the USRP compatible to the
 $30.72$MHz reference clock frequency.
 
-The modified UHD version is available at
-\url{http://www.github.com/Opendigitalradio/uhd.git} and replaces Ettus' UHD.
+The modified UHD version is available on the ODR GitHub\footnote{
+    \url{http://www.github.com/Opendigitalradio/uhd.git}} and is used in place
+of Ettus' UHD.
 
 ODR-DabMod can be configured as follows:
 \begin{lstlisting}
@@ -180,7 +182,16 @@ max_gps_holdover_time=600
 
 
 \subsection{Using Ettus GPSDO}
+When using the GPSDO from Ettus, which is a Jackson Labs Firefly module, no
+special UHD version needs to be installed.
 
-\sidenote{Give example}
+The configuration is:
+\begin{lstlisting}
+[uhdoutput]
+refclk_source=gpsdo-ettus
+pps_source=gpsdo
+behaviour_refclk_lock_lost=crash
+max_gps_holdover_time=600
+\end{lstlisting}
 
 % vim: spl=en spell tw=80 et
