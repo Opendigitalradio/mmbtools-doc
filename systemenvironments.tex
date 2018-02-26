@@ -153,24 +153,30 @@ $10$\ms.
 The performance of the NTP synchronisation should also be monitored permanently
 during operation.
 
+\subsection{Monitoring through SNMP}
+There is ongoing work to make the monitoring of the tools possible using SNMP.
+Please see \url{https://wiki.opendigitalradio.org/SNMP} for information about
+this effort.
 
 \subsection{Monitoring using munin}
-
 The Munin\footnote{\url{http://munin-monitoring.org/}} monitoring tool can
 create graphs for essential system health parameters. It can also send emails
 if values transgress the defined bounds - this assists the operator in the
 assessment of system status, as well as the health of the services.
 
 In addition to basic system measurements like CPU, RAM and disk usage, NTP
-synchronisation, disk and network performance (and much more besides), there
-are also custom data sources for ODR-DabMux.
+synchronisation, disk and network performance, there are custom data sources
+available for ODR-DabMux and ODR-DabMod.
 
-These data sources include ZMQ input buffer monitoring (buffer level, underruns
-and overruns) and the peak audio input levels (mono, or stereo). This
-can be installed by copying \verb+doc/stats_dabmux_multi.py+ to
-\texttt{/etc/munin/plugins.d}. They require that the ODR-DabMux management
-server is enabled in the configuration, and will automatically generate the
-graphs for the subchannels used in the configuration.
+The ODR-DabMux data sources include ZMQ input buffer monitoring (buffer level,
+underruns and overruns) and the peak audio input levels (mono, or stereo). The
+plugin for ODR-DabMod can monitor SDR device statistics among others.
+
+The plugins are written in python and are located in the \verb+doc+ folder in
+the repositories. Copy them to \texttt{/etc/munin/plugins.d} and restart
+munin-node. They require that the ODR-DabMux management
+server, and the ZeroMQ remote control enabled on the ports give in the example
+configurations.
 
 
 \subsection{Monitoring using Xymon}
