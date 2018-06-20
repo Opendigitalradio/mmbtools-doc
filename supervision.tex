@@ -1,17 +1,17 @@
 % LICENSE: see LICENCE
 \section{Supervision of Transmitted Ensembles}
-\subsection{Introduction}
-We have seen a way to monitor the transmission infrastructure (or at least some
-of its essential parts) in chapter \ref{monitmunin} about munin monitoring.
-These monitoring elements give an indication about ODR-DabMux and ODR-DabMod
-health from within the infrastructure itself, and may not be able to inform you
-about some issues happening outside of the software tools.
+\subsection{Introduction} 
+We have previously seen a way to monitor the transmission infrastructure (or at
+least some of its essential parts) in chapter \ref{monitmunin} about munin 
+monitoring. These monitoring elements give an indication about ODR-DabMux and
+ODR-DabMod health from within the infrastructure itself, and may not be able to
+inform you about some issues happening outside of the software tools.
 
-Monitoring the transmitted signal from an external place can complement the
-internal monitoring and broaden the supervision coverage. In the end, we can
-only consider the broadcast system being in an operational state if a receiver
-can play all programmes, and being able to verify this automatically by placing
-a receiver in the field is the only way to ensure this.
+Monitoring the transmitted signal at a remote site within the coverage area can
+complement the internal monitoring and broaden the supervision coverage. In the
+end, we can only consider the broadcast system being in an operational state if
+a receiver can play all programmes, and being able to verify this automatically
+by placing a receiver in the field is the only way to ensure this.
 
 In this chapter, we will see one way to achieve this.
 
@@ -30,9 +30,9 @@ welle-cli can present the ensemble data in more than one way, but we will focus
 on the HTTP interface. It is enabled with the \texttt{-w 7979} option, which
 will run the HTTP server on port 7979. Select the channel to receive, e.g.~10A, with
 \texttt{-c 10A}.
-When you point your browser to \url{http://localhost:7979}, you will get a
+When you point your browser to \url{http://localhost:7979}, you will see a
 simple web-page that shows a subset of the data available through the API. When
-pressing a Play button, \texttt{welle-cli} will start decoding the selected
+pressing a play button, \texttt{welle-cli} will start decoding the selected
 sub-channel and stream it to the browser as an MP3 stream.\footnote{MP3 is used
 because it is the only compressed audio format that is supported in all
 browsers. The AAC or MP2 audio inside the ensemble is re-encoded by
