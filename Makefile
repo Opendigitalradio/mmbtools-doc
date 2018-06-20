@@ -6,7 +6,8 @@ includes = introduction.tex \
 		   systemenvironments.tex \
 		   production.tex \
 		   datafeatures.tex \
-		   sfn.tex
+		   sfn.tex \
+		   supervision.tex
 
 bib = dab.bib
 
