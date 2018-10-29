@@ -143,21 +143,30 @@ The txgain setting has another range, it is best to start at $0$dB, and increase
 it in steps of $3$dB or smaller while measuring the output signal, until the
 correct power is reached.
 
-\subsubsection{Other Hardware}
+\subsubsection{Other Hardware with SoapySDR}
 \label{otherhardware}
-ODR-DabMod supports other radio interfaces using SoapySDR or through standard output, or via
-a fifo -- the latter must be created prior to runtime with the \texttt{mkfifo} command.
+ODR-DabMod supports other radio interfaces using the
+SoapySDR\footnote{\url{https://github.com/pothosware/SoapySDR/wiki}}
+vendor-neutral and platform independent library to drive SDR devices. It can be
+used to drive the LimeSDR boards, the HackRF from Great Scott Gadgets and the
+Fairwaves XTRX devices, among others. Installation dependencies are shown in the
+\texttt{INSTALL} file, and an example configuration is in
+\texttt{doc/example.mux}.
 
-SoapySDR\footnote{\url{https://github.com/pothosware/SoapySDR/wiki}} is a vendor
-neutral and platform independent library to drive SDR devices. It can be used to
-drive the LimeSDR boards, the HackRF from Great Scott Gadgets and the Fairwaves
-XTRX devices, among others. Installation
-dependencies are shown in the \texttt{INSTALL} file, and an example
-configuration is in \texttt{doc/example.mux}. The TX Gain setting should be
-chosen inside the valid range for the device being used. This range can be shown
-by calling \texttt{SoapySDRUtil --probe}.
+The available sampling rates, the TX gain range and the antenna selection are
+device-specific, and can be discovered using the \texttt{SoapySDRUtil --probe}
+command.
 
-The unit is an entry level yet versatile SDR which provides coverage between
+\subsubsection{HackRF Through Stdout Pipe}
+For devices that are not offering a SoapySDR device driver, the last resort is
+to use standard output or a fifo to carry the IQ data from ODR-DabMod to a tool
+that can drive the device.
+The fifo must be created prior to runtime with the \texttt{mkfifo} command.
+
+We are going to illustrate this with the HackRF, even though there is a SoapySDR
+device driver for it, but it is equally applicable for other devices.
+
+The HackRF is an entry level yet versatile SDR which provides coverage between
 $\approx10$MHz to $6$GHz, and DAB signals been successfully generated with it in
 VHF Band III ($174$--$240$MHz), L-Band ($1462$--$1467.5$MHz) and even the worldwide ISM
 Band ($2400$--$2500$MHz). The latter (subject to local regulations) is a licence exempt
@@ -170,8 +179,8 @@ both particularly important.
 
 To use the HackRF through stdout (i.e.\ without SoapySDR),
 the output of ODR-DabMod must be set (in the configuration file) to
-produce 8-bit signed integers, rather than the default complex floats.
-\footnote{UHD versions before 3.12 output a version string to standard output
+produce 8-bit signed integers, rather than the default complex
+floats.\footnote{UHD versions before 3.12 output a version string to standard output
 at startup. This interferes with all ODR-DabMod usage with \texttt{/dev/stdout}
 as output, and will only function correctly if ODR-DabMod is configured at
 compilation time with UHD disabled.}
