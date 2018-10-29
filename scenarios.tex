@@ -21,7 +21,7 @@ odr-dabmod myfirst.eti -f myfirst.iq -n 1
 
 This will create a file containing 32-bit interleaved I/Q at $2048000$ samples
 per second. Where the maximal amplitude is bounded by 1.The transmission mode
-is defined by the ETI file. 
+is defined by the ETI file.
 
 The equivalent configuration file would be
 \begin{lstlisting}
@@ -147,17 +147,11 @@ correct power is reached.
 \label{otherhardware}
 ODR-DabMod supports other radio interfaces using SoapySDR or through standard output, or via
 a fifo -- the latter must be created prior to runtime with the \texttt{mkfifo} command.
-Due to limitations in the UHD driver library, \texttt{/dev/stdout} will only
-function correctly if ODR-DabMod is configured at compilation time with the
-following argument:
-
-\begin{lstlisting}
---disable-output-uhd
-\end{lstlisting}
 
 SoapySDR\footnote{\url{https://github.com/pothosware/SoapySDR/wiki}} is a vendor
 neutral and platform independent library to drive SDR devices. It can be used to
-drive the LimeSDR board and the HackRF from Great Scott Gadgets. Installation
+drive the LimeSDR boards, the HackRF from Great Scott Gadgets and the Fairwaves
+XTRX devices, among others. Installation
 dependencies are shown in the \texttt{INSTALL} file, and an example
 configuration is in \texttt{doc/example.mux}. The TX Gain setting should be
 chosen inside the valid range for the device being used. This range can be shown
@@ -177,7 +171,11 @@ both particularly important.
 To use the HackRF through stdout (i.e.\ without SoapySDR),
 the output of ODR-DabMod must be set (in the configuration file) to
 produce 8-bit signed integers, rather than the default complex floats.
-HackRF has selectable baseband filters, however the lowest filter setting
+\footnote{UHD versions before 3.12 output a version string to standard output
+at startup. This interferes with all ODR-DabMod usage with \texttt{/dev/stdout}
+as output, and will only function correctly if ODR-DabMod is configured at
+compilation time with UHD disabled.}
+The HackRF has selectable baseband filters, however the lowest filter setting
 ($1.75$MHz) does not provide adequate image rejection at the native sampling rate of
 $2048$k samples per second. An appropriate rate to start with is $4096$k, and for
 some purposes this may well be adequate as this moves the image signals
