@@ -157,6 +157,9 @@ The available sampling rates, the TX gain range and the antenna selection are
 device-specific, and can be discovered using the \texttt{SoapySDRUtil --probe}
 command.
 
+For example, the LimeSDR mini requires the \verb+tx_antenna+ to be set to
+BAND2.
+
 \subsubsection{HackRF Through Stdout Pipe}
 For devices that are not offering a SoapySDR device driver, the last resort is
 to use standard output or a fifo to carry the IQ data from ODR-DabMod to a tool
