@@ -1,5 +1,30 @@
 % LICENSE: see LICENCE
 \section{Data Features}
+\subsection{FIG 1 Labels and FIG 2 Extended Labels}
+The specification offers two ways to carry ensemble, service and component
+labels: through FIG 1 and through FIG 2, specified in clauses 5.2.2.2 and 5.2.2.3
+of ETSI EN 300 401~\cite{etsidab}.
+
+Most receivers are only able to show FIG 1 Labels encoded in the Complete EBU
+Latin character set (defined in ETSI TS 101 756 clause
+5.2~\cite{etsidabtables}). Some are able to display Unicode FIG 1 Labels,
+encoded either in UTF-8 or UCS-2, and, as of early 2019, receiver support for
+FIG 2 Extended Labels is practically absent.
+
+The main downside of carrying Unicode FIG 1 Labels is the length limitation: 16
+bytes will only encode eight characters in alphabets that require two bytes per
+character. FIG 2 supports up to 32 bytes labels to alleviate this.
+
+The intention is that new ensembles in countries requiring labels in non-latin
+alphabets transmit only FIG 2 Extended Labels, whereas currently operating
+ensembles keep transmitting FIG 1 Labels. This entices receiver manufacturers to
+support FIG 2 without impacting functionality of receivers currently in use.
+Transmitting both FIG 1 and FIG 2 is discouraged by the specification.
+
+The way FIG 2 is encoded has been redefined, which is why ODR-DabMux supports
+two variants: FIG 2 with character flag being the old variant, and FIG 2 with
+text control that will become the default variant.
+
 \subsection{Announcements}
 The ODR-DabMux multiplexer supports the insertion of FIG 0/18 and FIG 0/19 that
 are used to define and trigger announcements according to ETSI TR 101 496-2
