@@ -113,9 +113,7 @@ a real-time streaming scenario (e.g.~in a transmitter).
 
 ODR-DabMux can read input audio or data from files (``.mp2'' for DAB, ``.dabp'' for
 \dabplus), FIFOs (also called ``named pipes''), or from a network connection. This
-network connection can use UDP or ZeroMQ. The CURVE authentication mechanism
-from ZeroMQ can also be used to authenticate the encoder, in order to prevent
-third parties from disrupting or hijacking programmes.
+network connection can use UDP (STI-D) or EDI.
 
 The configuration of the multiplexer is given in a configuration file, whose
 format is defined in the example files in the \verb+doc/+ folder inside the
@@ -134,7 +132,7 @@ software-defined radio (SDR) devices using the
 SoapySDR\footnoteurl{https://github.com/pothosware/SoapySDR/wiki} library.
 
 The output of the modulator can also be sent to a GNURadio flow-graph for
-further processing, conversion or analysis using a ZeroMQ interface.
+further processing, conversion or analysis using a ZeroMQ network connection.
 
 \subsubsection{ODR-AudioEnc}
 The ODR-AudioEnc encoder can be used to encode for DAB and \dabplus. It includes
@@ -147,7 +145,7 @@ Another encoder called twolame is not compatible with DAB even though it is more
 recent than TooLAME, and cannot be used for our application.
 
 The framing and error correction which are needed for \dabplus{}, as well as the
-programme-associated data (PAD) insertion, the output to the ZeroMQ interface,
+programme-associated data (PAD) insertion, the output EDI protocol,
 and the input from Advanced Linux Sound Architecture (ALSA) were then added by
 different parties.
 

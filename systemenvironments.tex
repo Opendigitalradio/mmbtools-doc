@@ -169,9 +169,10 @@ In addition to basic system measurements like CPU, RAM and disk usage, NTP
 synchronisation, disk and network performance, there are custom data sources
 available for ODR-DabMux and ODR-DabMod.
 
-The ODR-DabMux data sources include ZMQ input buffer monitoring (buffer level,
-underruns and overruns) and the peak audio input levels (mono, or stereo). The
-plugin for ODR-DabMod can monitor SDR device statistics among others.
+The ODR-DabMux data sources include EDI and ZMQ input buffer monitoring (buffer
+level, underruns and overruns) and the peak audio input levels (mono, or
+stereo). The plugin for ODR-DabMod can monitor SDR device statistics among
+others.
 
 The plugins are written in python and are located in the \verb+doc+ folder in
 the repositories. Copy them to \texttt{/etc/munin/plugins.d} and restart

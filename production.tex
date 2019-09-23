@@ -15,8 +15,8 @@ First, let us outline what our desired setup shall include:
         encoders;
     \item One machine is used for audio encoding web-streams, multiplexing and
         modulation;
-    \item ODR-AudioEnc instances will connect over ZeroMQ to ODR-DabMux,
-        ODR-DabMod will use a TCP connection ODR-DabMux;
+    \item ODR-AudioEnc instances will connect over EDI to ODR-DabMux,
+        ODR-DabMod will use EDI to connecto to ODR-DabMux;
     \item All audio encoders will insert PAD with DLS, and optionally slideshow;
     \item We are transmitting using a USRP B200, driving a power amplifier;
     \item We enable both telnet and zmq remote control interfaces for management

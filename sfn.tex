@@ -37,10 +37,10 @@ an SFN setup.
 Most importantly, the timestamp feature must be enabled using the ``tist'' option in
 the ``general'' section.
 
-Furthermore, it is recommended to use the ZeroMQ transport between the
+Furthermore, it is recommended to use the EDI transport between the
 multiplexer and the modulators, which can be enabled in the ``outputs'' section.
 Care has to be taken to have an output that slows ODR-DabMux down to nominal
-rate. The ZeroMQ output alone does not enforce this. The following listing shows
+rate. The EDI output alone does not enforce this. The following listing shows
 the relevant options we just covered.
 
 \begin{lstlisting}
@@ -52,8 +52,16 @@ general {
 ...
 
 outputs {
-    ; Accept connections on all interfaces, on port 9100
-    zmq  "zmq+tcp://*:9100"
+    ; Accept connections on all interfaces, on port 13000
+    edi {
+        destinations {
+            tcp {
+                protocol tcp
+                listenport 13000
+            }
+        }
+        enable_pft  false
+    }
     ; This throttles muxing down to nominal rate
     throttle "simul://"
 }

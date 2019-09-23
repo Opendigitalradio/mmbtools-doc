@@ -35,6 +35,28 @@ In order to select the format, the following syntax for the \texttt{-O} option i
 \texttt{-O file://filename?type=format}, where \texttt{format} is one of \verb+framed+, \verb+streamed+ or
 \verb+raw+.
 
+
+\section{Additional EDI TAGs used}
+ODR defined and uses two additional EDI TAGs, whose content is described here.
+
+ODR-AudioEnc inserts audio level metadata into the ``ODRa'' TAG. The TAG item is in the following format:
+\begin{lstlisting}
+  TAG Name="ODRa" [4 bytes]
+  Length=4 [4 bytes]
+  Left Audio Level [signed 16-bit integer]
+  Right Audio Level [signed 16-bit integer]
+\end{lstlisting}
+
+
+The second EDI TAG ``ODRv'' contains version and uptime information for the EDI source.
+\begin{lstlisting}
+  TAG Name="ODRv" [4 bytes]
+  Length=N+4 [4 bytes]
+  Version [String of N bytes, UTF-8 encoded, not zero terminated]
+  Uptime [unsigned 32-bit integer representing number of seconds since program start]
+\end{lstlisting}
+
+
 \section{Bibliography}
 \bibliographystyle{acm}
 \bibliography{dab}
