@@ -146,12 +146,17 @@ synchronised to the clock time which is being transmitted by the multiplex to
 which it has been tuned.
 
 The system needs to run a NTP client that synchronises the system time over the
-network. Correct synchronisation can be checked using the \texttt{lpeers}
-command of the \texttt{ntpq} tool. The magnitude of the offset should be below
-$10$\ms.
+network. Correct synchronisation can be checked using \texttt{chronyc tracking}
+or the the \texttt{lpeers} command of the \texttt{ntpq} tool, depending on if
+you use chrony or openntp.
+The magnitude of the offset should be below $10$\ms.
 
 The performance of the NTP synchronisation should also be monitored permanently
 during operation.
+
+ODR-DabMux can run a command at startup to verify if the NTP client is properly
+working, using the \texttt{startupcheck} setting. This can be used to call
+\texttt{ntp-wait} or \texttt{chronyc waitsync} to wait for proper NTP sync.
 
 \subsection{Monitoring through SNMP}
 There is ongoing work to make the monitoring of the tools possible using SNMP.
