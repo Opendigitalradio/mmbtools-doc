@@ -122,8 +122,8 @@ section~\ref{sec:zeromq} below.}.
 EDI can be carried over UDP or other unreliable links, and offers a protection
 layer to correct bit-errors. Over network connections where the occasional
 congestion can occur, EDI can also be carried over TCP, which will ensure lost
-packets get retransmit. Unless you are able to reserve bandwidth for the EDI
-traffic, using TCP is the safer option.
+packets get retransmitted. Unless you are able to guarantee reserved bandwidth
+for the EDI traffic, using TCP is the safer option.
 
 While the main reason to use EDI is to put the different tools on different
 computers, it is not necessary to do so.
@@ -135,7 +135,9 @@ same machine, for increased flexibility.
 
 Between ODR-AudioEnc and ODR-DabMux, the EDI protocol carries \dabplus{}
 superframes or DAB frames, with additional metadata that contains the audio
-level indication for monitoring purposes.
+level indication, a version field and a free-form identifier string for
+monitoring purposes.\footnote{This metadata is carried in the custom EDI TAGs
+\texttt{ODRv} and \texttt{ODRa}.}
 The multiplexer cannot easily derive the audio level from the encoded bitstream
 without decoding it, so it makes more sense to calculate this in the encoder and
 carry it along the encoded data.
@@ -240,6 +242,11 @@ by third parties. Usually, some form of VPN is set up for this case.
 
 The EDI protocol can also carry data of a complete ensemble from ODR-DabMux to
 one or more instanced of ODR-DabMod.
+
+In case you with to interface ODR-DabMux with a modulator that does not support
+EDI over TCP, but your network is not stable enough to use UDP, you can use
+ODR-EDI2EDI. See \url{http://github.com/Opendigitalradio/ODR-EDI2EDI} for
+information about that tool.
 
 \subsection{ZeroMQ}
 \label{sec:zeromq}
