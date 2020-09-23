@@ -94,12 +94,14 @@ that are useful when setting up a transmission chain.
 \begin{figure}[h]
     \centering
     \smartdiagram[bubble diagram]{
-        ODR-mmbTools,
+        ODR-\\ mmbTools,
         ODR-DabMux,
         ODR-DabMod,
         ODR-PadEnc,
         etisnoop,
-        ODR-AudioEnc
+        ODR-\\ AudioEnc,
+        ODR-\\ SourceCompanion,
+        ODR-\\ EncoderManager
     }
     \caption{The family of ODR-mmbTools}
     \label{fig:family_mmbTools}
@@ -153,6 +155,16 @@ different parties.
 This encoder is able to generate programme-associated data (PAD) that can be
 injected into ODR-AudioEnc. It supports reading and encoding Dynamic Label
 Segment (DLS) from a text file, and reads images from a folder for MOT Slideshow.
+
+\subsubsection{ODR-EncoderManager}
+The ODR-EncoderManager presents a web-based interface that allows the user to
+create, manage and run audio and PAD encoders, and presents a HTTP API to update
+Dynamic Label Segment and Slides. One instance can handle several audio encoders
+simultaneously, and offers a simpler way to manage the audio encoding part of
+the \dabplus transmission chain.
+
+\subsubsection{ODR-SourceCompanion}
+This tool allows using third party audio encoders with the ODR-mmbTools.
 
 \subsubsection{etisnoop}
 Etisnoop is not used in the broadcasting chain directly, but is an analysis tool
