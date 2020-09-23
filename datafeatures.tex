@@ -1,5 +1,26 @@
 % LICENSE: see LICENCE
 \section{Data Features}
+\subsection{Programme-Associated Data}
+It is possible to encode Dynamic Label Segment and Slideshow using ODR-PadEnc,
+and to inject the PAD data into the audio encoder.
+
+ODR-AudioEnc and ODR-PadEnc need to be launched with the same PAD socket
+identifier, and they will be able to communicate. The PAD length specifies the
+amount of data that is taken away from audio and used for PAD. Valid values are
+6, and the range 8 to 196. When not transmitting slides, small PAD lengths
+are perfectly suitable. When using slides, it is better to use values around 30.
+Higher lengths will of course accelerate the transmission of the slide at the
+expense of reduced audio quality during the transmission time.
+
+ODR-PadEnc will itself only take DLS and slides from files on the
+system it runs on.
+If your playout system is able to push updates using FTP, you will need to
+configure and FTP server to present the right folder.
+
+A more modern approach is offered by ODR-EncoderManager, which will not only
+configure and run your encoders, but also present you an HTTP API to update DLS
+and upload slides. More information is available in its README.
+
 \subsection{FIG 1 Labels and FIG 2 Extended Labels}
 The specification offers two ways to carry ensemble, service and component
 labels: through FIG 1 and through FIG 2, specified in clauses 5.2.2.2 and 5.2.2.3
