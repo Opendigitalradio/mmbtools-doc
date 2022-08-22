@@ -268,57 +268,6 @@ device-utility --arguments
 \end{lstlisting}
 
 
-\subsection{Advanced Signal Processing}
-\subsubsection{Crest Factor Reduction}
-ODR-DabMod contains a prototype for crest factor reduction (CFR), which allows you to
-reduce peak-to-average power ratio (PAPR), trading off with modulation error
-rate (MER). The DAB OFDM signal has a very high PAPR, which directly translates
-to a decrease in power amplifier efficiency. The power amplifier has to be
-driven such that the peaks do not drive it into compression, but the overall
-efficiency is calculated from the average power.
-Reducing the PAPR makes it possible to drive the amplifier more.
-
-The CFR algorithm works in the following way: all the generated OFDM samples go
-through a limiter, which clips the amplitude to a configurable value. This
-directly reduces PAPR, but impacts both amplitude and phase of the constellation
-points, thereby degrading MER. To compensate for this, a second step of the
-algorithm calculates the error vector for each constellation point, and clips
-the error to some maximum amplitude. The clipped error is then subtracted from
-the signal, which corrects part of the distortion created by the limiter.
-
-To summarise: a low clipping value distorts the signal more; a high error
-clipping value corrects the distortion again.
-In the constellation plot view, the first is seen as an increase in spread of
-the points; the second is visible because it pulls the constellation points back
-into a circle of radius proportional to the error clipping value.
-
-Settings and some statistics are available through the remote control.
-
-\subsubsection{OFDM Symbol Windowing}
-One technique to improve the shoulder performance is to avoid generating abrupt
-transitions between the OFDM symbols, but apply cross-fading from one symbol to
-the next using a windowing function.\footnote{As of ODR-DabMod v1.0.1, this feature is
-still in the \texttt{next} development branch, and not part of a released
-version.}
-
-This feature can be enabled by setting the number of samples to use for
-overlapping one symbol with the next one, the default value is $10$ (out of a
-total symbol length of $2552$ samples in Transmission Mode I). Refer to the
-parameter \verb+ofdmwindowing+ in the file \verb+doc/example.ini+ for
-instructions.
-
-As this windowing feature modifies samples that are in the guard interval, the
-trade-off is reduced resilience against delayed reflections, reduced maximum
-transmitter delay difference in an SFN scenario, and potentially diminished
-robustness against Doppler spread.
-
-\subsubsection{Digital Pre-Distortion}
-An ongoing activity is the development of a method to characterise a power
-amplifier and predistort the I/Q samples to invert the distortion behaviour of
-the amplifier. More information about this work is in the \verb+dpd/README.md+
-file in ODR-DabMod.
-
-
 \subsection{Audio Sources}
 Preparing a DAB multiplex with different programmes requires that we are able to
 read and encode several audio sources. We have seen in
@@ -394,5 +343,56 @@ This is illustrated in ``Studio C'' in figure~\ref{fig:txchain-with-encoders}.
 
 If ``Studio C'' is able to prepare slides for MOT Slideshow and text to be sent
 as DLS, ODR-PadEnc can be used to prepare the PAD data for ODR-AudioEnc.
+
+
+\subsection{Advanced Signal Processing}
+\subsubsection{Crest Factor Reduction}
+ODR-DabMod contains a prototype for crest factor reduction (CFR), which allows you to
+reduce peak-to-average power ratio (PAPR), trading off with modulation error
+rate (MER). The DAB OFDM signal has a very high PAPR, which directly translates
+to a decrease in power amplifier efficiency. The power amplifier has to be
+driven such that the peaks do not drive it into compression, but the overall
+efficiency is calculated from the average power.
+Reducing the PAPR makes it possible to drive the amplifier more.
+
+The CFR algorithm works in the following way: all the generated OFDM samples go
+through a limiter, which clips the amplitude to a configurable value. This
+directly reduces PAPR, but impacts both amplitude and phase of the constellation
+points, thereby degrading MER. To compensate for this, a second step of the
+algorithm calculates the error vector for each constellation point, and clips
+the error to some maximum amplitude. The clipped error is then subtracted from
+the signal, which corrects part of the distortion created by the limiter.
+
+To summarise: a low clipping value distorts the signal more; a high error
+clipping value corrects the distortion again.
+In the constellation plot view, the first is seen as an increase in spread of
+the points; the second is visible because it pulls the constellation points back
+into a circle of radius proportional to the error clipping value.
+
+Settings and some statistics are available through the remote control.
+
+\subsubsection{OFDM Symbol Windowing}
+One technique to improve the shoulder performance is to avoid generating abrupt
+transitions between the OFDM symbols, but apply cross-fading from one symbol to
+the next using a windowing function.\footnote{As of ODR-DabMod v1.0.1, this feature is
+still in the \texttt{next} development branch, and not part of a released
+version.}
+
+This feature can be enabled by setting the number of samples to use for
+overlapping one symbol with the next one, the default value is $10$ (out of a
+total symbol length of $2552$ samples in Transmission Mode I). Refer to the
+parameter \verb+ofdmwindowing+ in the file \verb+doc/example.ini+ for
+instructions.
+
+As this windowing feature modifies samples that are in the guard interval, the
+trade-off is reduced resilience against delayed reflections, reduced maximum
+transmitter delay difference in an SFN scenario, and potentially diminished
+robustness against Doppler spread.
+
+\subsubsection{Digital Pre-Distortion}
+An ongoing activity is the development of a method to characterise a power
+amplifier and predistort the I/Q samples to invert the distortion behaviour of
+the amplifier. More information about this work is in the \verb+dpd/README.md+
+file in ODR-DabMod.
 
 % vim: spl=en spell tw=80 et
