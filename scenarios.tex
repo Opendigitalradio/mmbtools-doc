@@ -153,22 +153,7 @@ Fairwaves XTRX devices, among others. Installation dependencies are shown in the
 \texttt{INSTALL} file, and an example configuration is in
 \texttt{doc/example.mux}.
 
-The available sampling rates, the TX gain range and the antenna selection are
-device-specific, and can be discovered using the \texttt{SoapySDRUtil --probe}
-command.
-
-For example, the LimeSDR mini requires the \verb+tx_antenna+ to be set to
-BAND2.
-
-\subsubsection{HackRF Through Stdout Pipe}
-For devices that are not offering a SoapySDR device driver, the last resort is
-to use standard output or a fifo to carry the IQ data from ODR-DabMod to a tool
-that can drive the device.
-The fifo must be created prior to runtime with the \texttt{mkfifo} command.
-
-We are going to illustrate this with the HackRF, even though there is a SoapySDR
-device driver for it, but it is equally applicable for other devices.
-
+We are going to illustrate this with the HackRF.
 The HackRF is an entry level yet versatile SDR which provides coverage between
 $\approx10$MHz to $6$GHz, and DAB signals been successfully generated with it in
 VHF Band III ($174$--$240$MHz), L-Band ($1462$--$1467.5$MHz) and even the worldwide ISM
@@ -180,13 +165,6 @@ it is important to pay close attention to the specifications. The local oscillat
 phase noise performance, and the dynamic range (due to the heavy use of the band) are
 both particularly important.
 
-To use the HackRF through stdout (i.e.\ without SoapySDR),
-the output of ODR-DabMod must be set (in the configuration file) to
-produce 8-bit signed integers, rather than the default complex
-floats.\footnote{UHD versions before 3.12 output a version string to standard output
-at startup. This interferes with all ODR-DabMod usage with \texttt{/dev/stdout}
-as output, and will only function correctly if ODR-DabMod is configured at
-compilation time with UHD disabled.}
 The HackRF has selectable baseband filters, however the lowest filter setting
 ($1.75$MHz) does not provide adequate image rejection at the native sampling rate of
 $2048$k samples per second. An appropriate rate to start with is $4096$k, and for
@@ -196,7 +174,62 @@ them significantly. Since ODR-DabMod v1.0.1, the digital gain setting is not
 be influenced by the sample rate anymore, and should be set below 1, with some
 margin, to avoid digital clipping on modulation peaks.
 
-Example of the settings in the \texttt{mod.ini} file suitable for use with HackRF:
+Depending on the capabilities of the host computer, using higher sampling rates
+($6144$k, and even $8192$k) may be possible. This oversampling is desirable as
+it helps to produce a cleaner spectral output. At higher rates one needs to
+ensure that samples are not being dropped on the USB and that CPU resources are
+not being contended.
+
+The shoulder performance has been measured with a value at a little
+better than $35$dB, which is roughly equivalent to that obtained from first
+generation commercial modulator equipment. This can be increased to a relatively
+respectable $\approx 40$dB by enabling the FIR baseband filter in ODR-DabMod.
+The maximum output power available to meet these performance figures is
+approximately $-10$dBm RMS.
+
+The following configuration file \texttt{mod.ini}
+illustrates how to send the \texttt{myfirst.eti} over a HackRF on channel
+13C:
+
+\begin{lstlisting}
+[remotecontrol]
+telnet=1
+telnetport=2121
+
+[input]
+transport=file
+source=myfirst.eti
+loop=1
+
+[modulator]
+digital_gain=0.8
+rate=4096000
+
+[firfilter]
+enabled=1
+
+[output]
+output=soapysdr
+
+[soapyoutput]
+device=driver=hackrf
+master_clock_rate=32768000
+txgain=23
+channel=13C
+bandwidth=1750000
+\end{lstlisting}
+
+
+For other SoapySDR hardware, the available device-driver, sampling rates, the 
+TX gain range and the antenna selection can be discovered using the 
+\texttt{SoapySDRUtil --probe} command.
+
+\subsubsection{HackRF Through Stdout Pipe}
+For devices that are not offering a SoapySDR device driver, the last resort is
+to use standard output or a fifo to carry the IQ data from ODR-DabMod to a tool
+that can drive the device.
+
+Example of the settings in the \texttt{mod.ini} file suitable for use with Pipe:
 
 \begin{lstlisting}
 [remotecontrol]
@@ -219,34 +252,19 @@ enabled=1
 output=file
 
 [fileoutput]
-format=s8
+format=complexf
 filename=/tmp/ofdm.fifo
 
 \end{lstlisting}
 
-The output fifo has to be created beforehand, and the \texttt{hackrf\_transfer}
-utility is then used to transmit the signal to the device.
+The output fifo has to be created beforehand.
 
-Depending on the capabilities of the host computer, using higher sampling rates
-($6144$k, and even $8192$k) may be possible. This oversampling is desirable as
-it helps to produce a cleaner spectral output. At higher rates one needs to
-ensure that samples are not being dropped on the USB and that CPU resources are
-not being contended.
-
-The shoulder performance has been measured with a value at a little
-better than $35$dB, which is roughly equivalent to that obtained from first
-generation commercial modulator equipment. This can be increased to a relatively
-respectable $\approx 40$dB by enabling the FIR baseband filter in ODR-DabMod.
-The maximum output power available to meet these performance figures is
-approximately $-10$dBm RMS.
-
-Example of using ODR-DabMod with the \texttt{hackrf\_transfer} utility:
+Example of using ODR-DabMod with a Pipe-driven device transfer utiliy:
 
 \begin{lstlisting}
 mkfifo /tmp/ofdm.fifo
 odr-dabmod mod.ini &
-hackrf_transfer -t /tmp/ofdm.fifo -f 216928000 -x 47 \
-    -a 1 -s 4096000 -b 1750000
+device-utility --arguments
 \end{lstlisting}
 
 
