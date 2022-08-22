@@ -37,7 +37,6 @@ general {
     dabmode 1
     nbframes 5000
 }
-remotecontrol { telnetport 0 }
 ensemble {
     id 0x4fff
     ecc 0xec ; Extended Country Code
@@ -53,7 +52,6 @@ services {
 }
 subchannels {
     sub-p1 {
-        ; MPEG
         type audio
         inputfile "prog1.mp2"
         bitrate 128
@@ -70,12 +68,10 @@ subchannels {
 }
 components {
     comp-p1 {
-        label Prog1
         service srv-p1
         subchannel sub-p1
     }
     comp-p2 {
-        label Prog2
         service srv-p2
         subchannel sub-p2
     }
