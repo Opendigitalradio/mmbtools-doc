@@ -112,8 +112,6 @@ available between the tools.
 The standard protocol to carry both contribution (From audio encoder to
 multiplexer) and distribution (from multiplexer to modulators) is
 EDI, specified by ETSI~\cite{etsits102693}
-\footnote{For a summary about the ZeroMQ interface used before EDI, see the
-section~\ref{sec:zeromq} below.}.
 
 EDI can be carried over UDP or other unreliable links, and offers a protection
 layer to correct bit-errors. Over network connections where the occasional
@@ -138,17 +136,33 @@ The multiplexer cannot easily derive the audio level from the encoded bitstream
 without decoding it, so it makes more sense to calculate this in the encoder and
 carry it along the encoded data.
 
+The first step is to encode the 2 audio programs with the output set for EDI:
+\begin{lstlisting}
+odr-audioenc --dab -i prog1.wav -b 128 -e tcp://localhost:9001
+odr-audioenc -i prog2.wav -b 88 -e tcp://localhost:9002
+\end{lstlisting}
+
 On the multiplexer, the subchannel must be configured for EDI as follows:
 \begin{lstlisting}
-sub-fb {
-    type dabplus
-    bitrate 80
-    id 24
-    protection 3
-
-    inputproto edi
-    inputuri "tcp://*:7002"
-    buffer-management prebuffering
+subchannels {
+    sub-p1 {
+        type audio
+        bitrate 128
+        id 10
+        protection 5
+        inputproto edi
+        inputuri "tcp://*:9001"
+        buffer-management prebuffering
+    }
+    sub-p2 {
+        type dabplus
+        bitrate 88
+        id 1
+        protection 1
+        inputproto edi
+        inputuri "tcp://*:9002"
+        buffer-management prebuffering
+    }
 }
 \end{lstlisting}
 
@@ -232,7 +246,23 @@ Complete examples of such a setup are given in the scenarios.
 The EDI protocol can also carry data of a complete ensemble from ODR-DabMux to
 one or more instanced of ODR-DabMod.
 
-In case you with to interface ODR-DabMux with a modulator that does not support
+On the multiplexer, the output must be configured for EDI as follows:
+\begin{lstlisting}
+outputs {
+    edi {
+        destinations {
+            edi_tcp {
+                protocol tcp
+                listenport 9201
+            }
+        }
+    }
+
+    ; Throttle output to real-time (one ETI frame every 24ms)
+    throttle "simul://"
+}\end{lstlisting}
+
+In case you wish to interface ODR-DabMux with a modulator that does not support
 EDI over TCP, but your network is not stable enough to use UDP, you can use
 ODR-EDI2EDI. See \url{http://github.com/Opendigitalradio/ODR-EDI2EDI} for
 information about that tool.
