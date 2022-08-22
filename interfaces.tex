@@ -248,32 +248,4 @@ EDI over TCP, but your network is not stable enough to use UDP, you can use
 ODR-EDI2EDI. See \url{http://github.com/Opendigitalradio/ODR-EDI2EDI} for
 information about that tool.
 
-\subsection{ZeroMQ}
-\label{sec:zeromq}
-Previous versions of this guide described an IP protocol based on
-ZeroMQ, a library that permits the creation
-of a socket connection with automatic connection management (connection,
-disconnection, error handling). This has now been deprecated in favour of
-the standards compliant EDI, which, when carried over TCP, can also be
-used over congested networks like the Internet.
-
-ZeroMQ was used both between for encoded audio contribution and for distribution
-of ensemble data, and was a custom, non-specified protocol. It was created
-before EDI got implemented in the ODR-mmbTools, and because carrying ETI inside
-IP was not sufficient for carrying complete timestamps, and because there was no
-other obvious option for audio contribution besides inventing a custom protocol.
-
-Now that it is proven that EDI-over-TCP can work satisfactorily over congested
-networks, there is no reason for a protocol that is not conforming to ETSI
-specifications to exist anymore.
-
-\subsection{Pipes}
-
-Pipes are an older real-time method to connect several encoders to one
-multiplexer on the same machine. It uses the same configuration as the file
-input but instead of using files, FIFOs, also called ``named pipes'' are
-created first using \texttt{mkfifo}.
-
-This setup is deprecated in favour of EDI.
-
 % vim: spl=en spell tw=80 et
