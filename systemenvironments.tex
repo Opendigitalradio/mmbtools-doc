@@ -338,6 +338,11 @@ included in the UHD sources, but might not have been automatically installed.
 The file is called \texttt{10-uhd-usrp.rules}, should be placed into
 \texttt{/etc/udev/rules.d/} and should contain
 
+\subsection{Authentication Support}
+In order to be able to use the Internet as contribution network, some form of
+protection has to be put in place to make sure the audio data cannot be altered
+by third parties. Usually, some form of VPN is set up for this case.
+
 { \footnotesize
 \begin{verbatim}
 #USRP1
