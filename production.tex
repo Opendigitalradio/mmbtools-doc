@@ -37,7 +37,7 @@ functional and reliable broadcast setup.
 
 
 \subsection{Setup steps}
-\paragraph{Choice of computer}
+\paragraph{Select a computer}
 First, a suitable computer has to be chosen for running the tools. As this needs
 to be as reliable as possible, it is preferable to chose a server designed for
 reliability. Because we are driving a USRP over USB, it is essential to have a
@@ -46,7 +46,7 @@ this besides actually testing it. See section~\ref{usrp_b200} for more details.
 Redundant power supplies and the ability to use two hard drives in a RAID are
 also useful to have.
 
-\paragraph{Operating System}
+\paragraph{Install the OS}
 The operating system needs to be installed next. All the dependencies for the
 tools need to be installed, as well as the additional tools needed for the
 system: supervisord for process supervision, Munin for monitoring, logging and
@@ -55,18 +55,17 @@ additional topics discussed in section~\ref{systemenvironment}.
 If you need to prepare remote encoders, this has to be done for all the machines
 you will use.
 
-\paragraph{Installation of the Tools}
-The tools themselves need to be installed, according to instructions in the
-\texttt{README} and \texttt{INSTALL} files of the repositories. Then you need to
-prepare the configuration for the tools, using the examples and this guide.
-For every programme, create a folder for the slideshow images and gather the
-slides, and prepare the interfaces for DLS text.
-Write the supervisord configuration files that are used to launch all
+\paragraph{Install the tools}
+The tools themselves need to be installed, as discussed previously. Then you need
+to prepare the configuration files. If you used the dab-script installation
+tool, then you will need to adapt them. Otherwise, for every programme, create a
+folder for the slideshow images and gather the slides, and prepare the interfaces
+for DLS text. Write the supervisord configuration files that are used to launch all
 ODR-AudioEnc and ODR-PadEnc processes. Write the multiplex configuration, with
 all the entries for your programmes and an appropriate supervisor configuration.
 Setup ODR-DabMux munin monitoring as desired.
 
-\paragraph{Verification of Multiplexer}
+\paragraph{Verify the Multiplexer}
 At this point you should already be able to launch the configured tools and
 verify that they start, connect properly and stay running.
 You can simulate process failures by killing any of the tools; the supervisor
@@ -80,15 +79,15 @@ See \url{http://github.com/Opendigitalradio/dablin} for information about
 dablin.}
 Also check that logging and munin monitoring works.
 
-\paragraph{ODR-DabMod Configuration}
+\paragraph{Configure the modulator}
 Next configure ODR-DabMod. For improved spectrum performance, configure it with
 FIR filter enabled, OFDM symbol windowing enabled (if available), with the
-frequency given in your license, and start with a digital gain of $0.5$ and a TX
-gain of $60$dB. If you have a disciplined 10MHz clock reference or a GPSDO,
-configure accordingly. This will ensure the modulator runs at the same rate as
-the rest of the transmission chain whose rate is in turn related to NTP.
+frequency given in your license, and start with a digital gain of $0.5$ and a low
+TX gain, based on your HF device. If you have a disciplined 10MHz clock reference
+or a GPSDO, configure accordingly. This will ensure the modulator runs at the same
+rate as the rest of the transmission chain whose rate is in turn related to NTP.
 
-\paragraph{Generate Exciter Signal}
+\paragraph{Generate an Exciter Signal}
 Prepare the ODR-DabMod supervisor configuration. Connect the USRP to a spectrum
 analyser and launch the modulator. Before connecting the power amplifier, make
 sure to have a good spectrum at the USRP TX port, and use the remote control
@@ -100,8 +99,8 @@ Ideally, let this setup run for a couple of days and check for the absence of
 underruns. This step proves you can generate a valid exciter signal with good
 characteristics.
 
-\paragraph{Connect Power Amplifier}
-After stopping the transmission, connect the USRP to a Band III
+\paragraph{Connect a Power Amplifier}
+After stopping the transmission, connect the HF device to a Band III
 filter\footnote{For example, a filter with similar characteristics as the
 Mini-Circuits RBP-220W+.} to suppress harmonics, connect to the power amplifier.
 Using suitable attenuation, connect the amplifier output to your spectrum

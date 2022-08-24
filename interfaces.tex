@@ -1,6 +1,6 @@
 % LICENSE: see LICENCE
 \section{Interfacing the Tools}
-\subsection{Files}
+\subsection{Using files}
 \label{sec-files}
 The first versions of these tools used files and pipes to exchange data. For
 offline generation of a multiplex or a modulated I/Q, it is possible to
@@ -103,14 +103,14 @@ Congratulations! You have just created your first DAB multiplex! With the
 configuration file, adding more programmes is easy. More information is
 available in the \filename{doc/example.mux}
 
-\subsection{Over the Network}
+\subsection{Using the Network}
 In a real-time scenario, where the audio sources produce data continuously and
 the tools have to run at the native rate, it is not possible to use files
 anymore to interconnect the tools. For this usage, a network interconnection is
 available between the tools.
 
-The standard protocol to carry both contribution (From audio encoder to
-multiplexer) and distribution (from multiplexer to modulators) is
+The standard protocol to carry both contribution (from audio encoder to
+multiplexer) and distribution (from multiplexer to modulator) is
 EDI, specified by ETSI~\cite{etsits102693}
 
 EDI can be carried over UDP or other unreliable links, and offers a protection
@@ -136,13 +136,15 @@ The multiplexer cannot easily derive the audio level from the encoded bitstream
 without decoding it, so it makes more sense to calculate this in the encoder and
 carry it along the encoded data.
 
-The first step is to encode the 2 audio programs with the output set for EDI:
+The first step is to encode the 2 audio programs with the output set for EDI.
+Assuming that both encoders and multiplexer run on the same host:
 \begin{lstlisting}
 odr-audioenc --dab -i prog1.wav -b 128 -e tcp://localhost:9001
 odr-audioenc -i prog2.wav -b 88 -e tcp://localhost:9002
 \end{lstlisting}
 
-On the multiplexer, the subchannel must be configured for EDI as follows:
+On the multiplexer configuration file, the subchannel must be configured for
+EDI as follows:
 \begin{lstlisting}
 subchannels {
     sub-p1 {
@@ -177,12 +179,15 @@ subchannel that uses a file input. The options are:
 
     \item \texttt{buffer-management}: Two buffer management approaches are
         possible with EDI:
-        The other option \texttt{timestamped} will take
-        into account the timestamps carried in EDI, inserting the audio into the
-        ETI frame associated to that same time stamp.
-        \texttt{prebuffering} ignores timestamps and
+    \begin{itemize}
+        \item \texttt{prebuffering} ignores timestamps and
         pre-buffers some data before it starts streaming. This allows to
         compensate for network jitter.
+
+        \item \texttt{timestamped} takes
+        into account the timestamps carried in EDI, inserting the audio into the
+        ETI frame associated to that same time stamp.
+    \end{itemize}
 
     \item \texttt{buffer}: (Both buffer management settings)
         The input contains an internal buffer for
@@ -246,7 +251,8 @@ Complete examples of such a setup are given in the scenarios.
 The EDI protocol can also carry data of a complete ensemble from ODR-DabMux to
 one or more instanced of ODR-DabMod.
 
-On the multiplexer, the output must be configured for EDI as follows:
+On the multiplexer configuration file, the output must be configured for EDI
+as follows:
 \begin{lstlisting}
 outputs {
     edi {

@@ -6,7 +6,7 @@ The creation of a ETI file containing two programmes, one DAB and one
 \dabplus{} is covered in section \ref{sec-files}.
 
 \subsubsection{Modulation of ETI for Offline Processing}
-The ETI file generated before can then be used with ODR-DabMod to generate a
+The ETI file generated before can then be used with ODR-DabMod to produce a
 file containing I/Q samples. Here, we must chose between using the command line
 or the configuration file. For a very simple example, using the command line
 makes sense, but for more advanced features it is preferable to use a
@@ -143,7 +143,7 @@ The txgain setting has another range, it is best to start at $0$dB, and increase
 it in steps of $3$dB or smaller while measuring the output signal, until the
 correct power is reached.
 
-\subsubsection{Other Hardware with SoapySDR}
+\subsubsection{SoapySDR}
 \label{otherhardware}
 ODR-DabMod supports other radio interfaces using the
 SoapySDR\footnote{\url{https://github.com/pothosware/SoapySDR/wiki}}
@@ -224,7 +224,7 @@ For other SoapySDR hardware, the available device-driver, sampling rates, the
 TX gain range and the antenna selection can be discovered using the 
 \texttt{SoapySDRUtil --probe} command.
 
-\subsubsection{HackRF Through Stdout Pipe}
+\subsubsection{Other hardware}
 For devices that are not offering a SoapySDR device driver, the last resort is
 to use standard output or a fifo to carry the IQ data from ODR-DabMod to a tool
 that can drive the device.
