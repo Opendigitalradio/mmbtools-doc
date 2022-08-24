@@ -52,12 +52,11 @@ general {
 ...
 
 outputs {
-    ; Accept connections on all interfaces, on port 13000
     edi {
         destinations {
             tcp {
                 protocol tcp
-                listenport 13000
+                listenport 9201
             }
         }
         enable_pft  false
