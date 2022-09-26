@@ -215,14 +215,15 @@ Apply the following steps:
     sudo timedatectl set-timezone your_timezone
     cd ${HOME}
     git clone https://github.com/opendigitalradio/dab-scripts.git
-    bash ${HOME}/dab-scripts/install/mmbtools-get install
+    sudo bash ${HOME}/dab-scripts/install/mmbtools-get install
 \end{lstlisting}
 
 \paragraph{Remarks}
 The installation script will compile the tools with all the possible features
 in order to give you the greatest configuration flexibility. It will also
 install the \texttt{supervisord} package with the configuration files for
-a live broadcasting of 2 dab+ programs.
+a live broadcasting of 2 dab+ programs. For more installation details, please
+refer to the install/README.md file in the github repository.
 
 \subsection{Manual Compilation}
 If you wish to compile and install some tools only and reduce disk usage by
