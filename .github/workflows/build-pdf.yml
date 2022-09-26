@@ -2,14 +2,13 @@ name: build-pdf
 on:
   push:
     branches:
-      - master
+      - 'master'
     paths-ignore:
       - '**build-pdf.yml'
   workflow_dispatch:
 
 jobs:
   build:
-    if: github.event.pull_request.merged == true || github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       # Checks-out the master branch of this repository
