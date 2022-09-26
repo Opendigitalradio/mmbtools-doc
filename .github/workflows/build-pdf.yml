@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - 'master'
-    paths-ignore:
-      - '**build-pdf.yml'
   workflow_dispatch:
 
 jobs:
