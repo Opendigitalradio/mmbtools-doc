@@ -9,6 +9,12 @@ global perspective.
 
 It also complements the opendigitalradio.org wiki.
 
+How to build locally
+--------------------
+
+1. On a debian-based host, install the packages: `texlive texlive-fonts-extra texlive-latex-extra texlive-science cm-super`
+1. Run the following command: `make clean && make`
+
 Latest Version
 --------------
 
