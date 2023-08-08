@@ -230,7 +230,7 @@ configuration of the launcher within the xymon client needs to be extended.
 Create a new file named \verb+odrmux.cfg+ in
 \verb+/usr/lib/xymon/client/etc/clientlaunch.d+ containing the following lines:
 
-\begin{verbatim}
+\begin{lstlisting}
 #
 # Test odrmux checks the state and the statistics
 # of the ODR-DabMux service.
@@ -240,7 +240,7 @@ Create a new file named \verb+odrmux.cfg+ in
 	CMD $XYMONCLIENTHOME/ext/retodrs.pl
 	LOGFILE $XYMONCLIENTLOGS/retodrs.plog
 	INTERVAL 5m
-\end{verbatim}
+\end{lstlisting}
 
 After a restart of the xymon client, the script \verb+retodrs.pl+ will
 be invoked once every 5 minutes.
@@ -254,9 +254,9 @@ alerting can be limited to a subset of the sub-channels by adding a tag to the
 hosts-entry in the configuration file \verb+/usr/lib/xymon/server/etc/hosts.cfg+.
 The additional tag is:
 
-\begin{verbatim}
+\begin{lstlisting}
 	ODR:select(<SubChannelName0>;<SubChannelName1>;...)
-\end{verbatim}
+\end{lstlisting}
 
 The sub-channels not named will still be shown, but no alerts will be generated
 for those sub-channels. This is visible as the green/yellow/red icons are
@@ -276,16 +276,16 @@ a so-called \textit{Round Robin Database}. This is accomplished by adding a file
 named \verb+odr.cfg+ in \verb+/usr/lib/xymon/server/etc/xymonserver.d+
 containing the following lines:
 
-\begin{verbatim}
+\begin{lstlisting}
 TEST2RRD+=",odr_mux=devmon"
 GRAPHS+=",odr_mux::1"
-\end{verbatim}
+\end{lstlisting}
 
 The next step is to define the layout of the graph.
 Create a file named \verb+graphs.odr.cfg+ in
 \verb+/usr/lib/xymon/server/etc/graphs.d+ containing the following lines:
 
-\begin{verbatim}
+\begin{lstlisting}
 #
 # Graphs to show the statistics collected from an
 # Opendigitalradio DabMux server.
@@ -307,7 +307,7 @@ Create a file named \verb+graphs.odr.cfg+ in
 	GPRINT:or@RRDIDX@:MAX:Max \: %5.1lf %s
 	GPRINT:or@RRDIDX@:AVERAGE:Avg \: %5.1lf %s
 	GPRINT:or@RRDIDX@:LAST:Cur \: %5.1lf %s\n
-\end{verbatim}
+\end{lstlisting}
 
 
 \subsection{Real-time Scheduling}
@@ -344,14 +344,14 @@ protection has to be put in place to make sure the audio data cannot be altered
 by third parties. Usually, some form of VPN is set up for this case.
 
 { \footnotesize
-\begin{verbatim}
+\begin{lstlisting}
 #USRP1
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="fffe", ATTRS{idProduct}=="0002", MODE:="0666"
 #B100
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2500", ATTRS{idProduct}=="0002", MODE:="0666"
 #B200
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2500", ATTRS{idProduct}=="0020", MODE:="0666"
-\end{verbatim}
+\end{lstlisting}
 }
 
 % vim: spl=en spell tw=80 et
