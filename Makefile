@@ -33,5 +33,4 @@ vc.tex: .git/logs/HEAD
 		\\gdef\\GITAuthorName{%an}" >> vc.tex
 
 clean:
-	rm -f *.aux $(latexfile).{pdf,out,toc,log,bbl,blg}
-
+	rm -f *.aux $(latexfile).{pdf,out,toc,log,bbl,blg} vc.tex
