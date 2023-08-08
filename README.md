@@ -12,7 +12,11 @@ It also complements the opendigitalradio.org wiki.
 How to build locally
 --------------------
 
-1. On a debian-based host, install the packages: `texlive texlive-fonts-extra texlive-latex-extra texlive-science cm-super`
+The pdf document will always be created automatically by the github repository upon a push. 
+However, it can be interesting to create the pdf on your host, in order to check the outcome of your changes prior to pushing them to the repository.
+
+On your debian-based host:
+1. Install the packages: `make texlive texlive-fonts-extra texlive-latex-extra texlive-science cm-super`
 1. Run the following command: `make clean && make`
 
 Latest Version
