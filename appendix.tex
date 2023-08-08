@@ -9,7 +9,7 @@ The three formats are called \emph{framed}, \emph{streamed} and \emph{raw}.
 
 The \emph{framed} format is used for saving a finite ETI stream into a file. Each frame does not contain any padding, and the
 format can be described as follows:
-\begin{lstlisting}
+\begin{lstlisting}[language=C]
 uint32_t nbFrames
 // for each frame
   uint16_t frameSize
@@ -18,7 +18,7 @@ uint32_t nbFrames
 
 When streaming data, in which case the number of frames is not known in advance, the \emph{streamed} format can be used.
 This format is identical to the first one except for the missing \texttt{nbFrames}.
-\begin{lstlisting}
+\begin{lstlisting}[language=C]
 // for each frame
   uint16_t frameSize
   uint8_t data[frameSize]
@@ -26,7 +26,7 @@ This format is identical to the first one except for the missing \texttt{nbFrame
 
 The \emph{raw} format corresponds to ETI(NI), where each frame has a constant size of 6144 Bytes. The padding in this
 case is necessary.
-\begin{lstlisting}
+\begin{lstlisting}[language=C]
 // for each frame
   uint8_t data[6144]
 \end{lstlisting}
@@ -40,7 +40,7 @@ In order to select the format, the following syntax for the \texttt{-O} option i
 ODR defined and uses two additional EDI TAGs, whose content is described here.
 
 ODR-AudioEnc inserts audio level metadata into the ``ODRa'' TAG. The TAG item is in the following format:
-\begin{lstlisting}
+\begin{lstlisting}[language=C]
   TAG Name="ODRa" [4 bytes]
   Length=4 [4 bytes]
   Left Audio Level [signed 16-bit integer]
@@ -49,7 +49,7 @@ ODR-AudioEnc inserts audio level metadata into the ``ODRa'' TAG. The TAG item is
 
 
 The second EDI TAG ``ODRv'' contains version and uptime information for the EDI source.
-\begin{lstlisting}
+\begin{lstlisting}[language=C]
   TAG Name="ODRv" [4 bytes]
   Length=N+4 [4 bytes]
   Version [String of N bytes, UTF-8 encoded, not zero terminated]
