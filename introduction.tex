@@ -182,14 +182,15 @@ transmissions.
 There are 3 ways to install the tools.
 
 \subsection{Debian Binary Packages}
-If your host is running a debian-Bullseye-based operating system and its
-architecture is one of amd64, arm64 or arm/v7, then you can easily install
+If your host is running a debian-based operating system and its
+architecture is either amd64, arm64 or arm/v7, then you can easily install
 ODR-AudioEnc, ODR-PadEnc, ODR-DabMux and ODR-DabMod
 from the ODR package repository by applying the following steps:
 
 \begin{lstlisting}
-    curl -fsSL http://debian.opendigitalradio.org/odr.asc | sudo tee /etc/apt/trusted.gpg.d/odr.asc 1>/dev/null
-    curl -fsSL http://debian.opendigitalradio.org/odr.list | sudo tee /etc/apt/sources.list.d/odr.list 1>/dev/null
+    #replace bullseye (debian-11) with bookworm (debian-12) if applicable
+    curl -fsSL http://debian.opendigitalradio.org/opendigitalradio-bullseye.sources > /etc/apt/sources.list.d/opendigitalradio-bullseye.sources
+    curl -fsSL http://debian.opendigitalradio.org/opendigitalradio.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/opendigitalradio.gpg
     apt update
     sudo apt install --yes odr-audioenc odr-padenc odr-dabmux odr-dabmod
 \end{lstlisting}
