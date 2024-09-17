@@ -182,18 +182,9 @@ transmissions.
 There are 3 ways to install the tools.
 
 \subsection{Debian Binary Packages}
-If your host is running a debian-based operating system and its
-architecture is either amd64, arm64 or arm/v7, then you can easily install
-ODR-AudioEnc, ODR-PadEnc, ODR-DabMux and ODR-DabMod
-from the ODR package repository by applying the following steps:
-
-\begin{lstlisting}
-    #replace bullseye (debian-11) with bookworm (debian-12) if applicable
-    curl -fsSL http://debian.opendigitalradio.org/opendigitalradio-bullseye.sources > /etc/apt/sources.list.d/opendigitalradio-bullseye.sources
-    curl -fsSL http://debian.opendigitalradio.org/opendigitalradio.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/opendigitalradio.gpg
-    apt update
-    sudo apt install --yes odr-audioenc odr-padenc odr-dabmux odr-dabmod
-\end{lstlisting}
+Packages will be available on the official debian repository from trixie (debian 13) onward.
+If you are running bookworm (debian 12), please add the debian official bookworm-backports repository by
+applying the instructions given on the debian wiki pages \footnoteurl{https://wiki.debian.org/Backports}.
 
 \paragraph{Remarks}
 The \texttt{odr-dabmux} and \texttt{odr-dabmod} packages do not include the web-based GUI Mux Manager
@@ -226,6 +217,7 @@ install the \texttt{supervisord} package with the configuration files for
 a live broadcasting of 2 dab+ programs. For more installation details, please
 refer to the install/README.md file in the github repository.
 
+\clearpage
 \subsection{Manual Compilation}
 If you wish to compile and install some tools only and reduce disk usage by
 selecting the needed features, then you should follow the instructions given
