@@ -1,0 +1,87 @@
+ODR-DabMod has been tested successfully with the Analog Devices SDR learning module known as the 'ADALM Pluto'. This low-cost unit provides a 12-bit resolution ADC and DAC and can deliver shoulder performance in excess of 50dB with either the FIR filter or OFDM windowing enabled in the ODR-DabMod configuration file.
+
+In comparison with other devices that are also recommended as test devices (rather than those used in production systems) the Pluto offers a better dynamic range than Hack RF which provides only 8-bits of resolution. Pluto also has better image rejection filtering - this is why operation at the native 2.048Msps is possible, while it is not practical with Hack RF due to it's lower baseband filter being fixed to 1.7 MHz. The output level of Pluto is considerably (6dB) lower than can be obtained with HackRF. 
+
+The RF frequency stability of Pluto is comparable with Hack RF - that is to say neither are recommended for production use. A good TCXO is the lowest specification oscillator suitable for this. Neither are suitable for synchronisation to GPS which would otherwise allow single frequency network (SFN) operation, or for aligning the phase reference symbols with those of other receivable multiplexes, or with other transmitters broadcasting the same ensemble in a multi-frequency network (MFN) configuration. This alignment can aid receivers in the process of tuning between them so it is good practice to use an SDR which supports this, even if the ensemble only has a single transmitter.  
+
+The tuning range of the Pluto 'out of the box' is between 325 MHz and 3.8 GHz, however it is possible to operate this chip out of specification such that is able to generate a signal between 45 MHz and 6 GHz. This worked on the device under test, but it does not mean that all other units will provide the same functionality. Output power with the best shoulder performance was measured at -16dBm. This is more than adequate for developers who wish to generate (conducted) signals for testing the tools with a receiver. 
+
+It goes without saying that before purchasing or using any device which uses radio frequency energy that you should check the legailty of doing so and familarise yourself with the local regulations. The necessary modifications may also invalidate any conformity that has been declared for the device, but it may still be possible to operate it as test equipment under suitable conditions.
+
+Satisfactory performance was obtained at the native 2048ksps and image rejection was noted to be good. It is possible to operate the Pluto at 3200ksps but 4096k was noted to be problematic due to dropped samples. The Pluto is rate limited by it's USB2.0 interface, but some host USB controllers may be able to sustain this rate.
+
+WARNING - it is possible to brick (i.e. cause permanent damage to) your Pluto through incorrect modification of the bootloader parameters. Do not proceed further unless you know what you are doing and fully understand the risks. Following this procedure is entirely at your own risk! 
+
+The first step in this process is to enable the Pluto for operation outside of it's specified tuning range. This can be achieved by connecting to it via ssh. The default IP address of the Pluto is 192.168.2.1 and the credentials are user=root and the password=analog and issue the following commands:
+
+fw_setenv attr_name compatible
+fw_setenv attr_val ad9364
+reboot
+
+If all is well, the heartbeat 'blinkenlight' will recommence after a few seconds.
+
+Next, on the host, you will need to install the following (from packages) or obtain and build them from source. The '*-dev' packages may not necessarily be needed:
+
+sudo apt-get install gnuradio libiio libiio-dev libad9361-0 libad9361-dev gr-iio
+
+A suitable GNURadio Companion flowgraph is pictured below along with the contents of a suitable configuration file for ODR-DabMod:
+
+; Sample configuration file for using ODR-DabMod with ADALM Pluto
+; using a zeromq input
+
+[remotecontrol]
+telnet=1
+telnetport=2121
+zmqctrl=1
+zmqctrlendpoint=tcp://127.0.0.1:2122
+
+[log]
+syslog=0
+filelog=0
+filename=/dev/stderr
+
+[input]
+transport=zeromq
+source=tcp://mpb.li:9100
+loop=1
+max_frames_queued=500
+
+[modulator]
+; Gain mode: 0=FIX, 1=MAX, 2=VAR
+gainmode=2
+normalise_variance=4
+ofdmwindowing=16
+; Transmission mode
+; If not defined, take the mode from ETI
+mode=1
+
+digital_gain=1.0
+
+; Output sample rate
+rate=2048000
+
+[firfilter]
+enabled=0
+#filtertapsfile=filter/simplefiltertaps.txt
+
+[output]
+output=zmq
+
+; section defining ZeroMQ output properties
+[zmqoutput]
+
+; on which port to listen for connections
+; please see the Transports section in man zmq
+; for more information regarding the syntax
+listen=tcp://*:54001
+
+; what ZMQ socket type to use. Valid values: PUB, REP
+; Please see man zmq_socket for documentation
+socket_type=pub
+
+[fileoutput]
+filename=/dev/null
+
+
+
+
